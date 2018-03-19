@@ -26,4 +26,5 @@ package prosjekt_del2;
             DatabaseOperations data = new DatabaseOperations();
             data.connect();
         }
+        
     }
