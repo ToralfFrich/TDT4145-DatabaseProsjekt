@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="prosjekt_del2.FxAppController">
+   <children>
+      <AnchorPane prefHeight="700.0" prefWidth="900.0">
+         <children>
+            <SplitPane dividerPositions="0.10601719197707736" orientation="VERTICAL" prefHeight="700.0" prefWidth="900.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <Text layoutX="45.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Treningsapp">
+                           <font>
+                              <Font name="Century Gothic" size="28.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <TabPane layoutX="-2.0" prefHeight="588.0" prefWidth="900.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab fx:id="tabOkt" text="Treningsøkt">
+                                 <content>
+                                    <AnchorPane>
+                                       <children>
+                                          <Pane prefHeight="558.0" prefWidth="898.0">
+                                             <children>
+                                                <HBox layoutX="35.0" layoutY="32.0" prefHeight="34.0" prefWidth="151.0">
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Legg til treningsøkt:" wrappingWidth="201.33447265625">
+                                                         <font>
+                                                            <Font size="21.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                                <TextField fx:id="txtTidspunkt" layoutX="233.0" layoutY="97.0" prefHeight="25.0" prefWidth="173.0" />
+                                                <Text layoutX="35.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dato (dd-mm-yyyy)" wrappingWidth="165.3339922428131">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text layoutX="237.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tidspunkt (TT:MM)" wrappingWidth="165.3339922428131">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text layoutX="35.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Varighet (i minutter)" wrappingWidth="165.3339922428131">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Text>
+                                                <TextField fx:id="txtVarighet" layoutX="35.0" layoutY="161.0" prefHeight="25.0" prefWidth="173.0" />
+                                                <Text layoutX="35.0" layoutY="213.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Personlig form (1-10)" wrappingWidth="165.3339922428131">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Text>
+                                                <TextField fx:id="txtPersonligForm" layoutX="35.0" layoutY="225.0" prefHeight="25.0" prefWidth="173.0" />
+                                                <Text layoutX="35.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Prestasjon (1-10)" wrappingWidth="165.3339922428131">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Text>
+                                                <TextField fx:id="txtPrestasjon" layoutX="35.0" layoutY="294.0" prefHeight="25.0" prefWidth="173.0" />
+                                                <Text layoutX="576.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Legg til øvelser" wrappingWidth="165.3339922428131">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text layoutX="576.0" layoutY="342.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Liste over øvelser" wrappingWidth="165.3339922428131">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Text>
+                                                <Button fx:id="btAdd" layoutX="576.0" layoutY="294.0" mnemonicParsing="false" onAction="#leggTilOvelserIOkt" text="Legg til" />
+                                                <TextField fx:id="txtListeOvelser" alignment="TOP_LEFT" layoutX="576.0" layoutY="355.0" prefHeight="152.0" prefWidth="173.0" />
+                                                <Text layoutX="35.0" layoutY="353.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Notat" wrappingWidth="165.3339922428131">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Text>
+                                                <TextField fx:id="txtNotat" alignment="TOP_LEFT" layoutX="35.0" layoutY="358.0" prefHeight="142.0" prefWidth="382.0" />
+                                                <Button fx:id="btOpprettOkt" layoutX="39.0" layoutY="520.0" mnemonicParsing="false" onAction="#lagOkt" prefHeight="25.0" prefWidth="165.0" text="Opprett treningsøkt" />
+                                                <TextField fx:id="txtKilo" layoutX="576.0" layoutY="161.0" promptText="Antall kilo" />
+                                                <TextField fx:id="txtSett" layoutX="576.0" layoutY="194.0" promptText="Antall sett" />
+                                                <TextField fx:id="txtDato" layoutX="35.0" layoutY="97.0" prefHeight="25.0" prefWidth="173.0" />
+                                                <TextField fx:id="txtApparatValg" layoutX="576.0" layoutY="225.0" promptText="Apparat" />
+                                                <Button fx:id="btLagreOkt" layoutX="578.0" layoutY="520.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="94.0" text="Lagre" />
+                                                <TextField fx:id="txtOvelseNavn" layoutX="576.0" layoutY="110.0" promptText="Navn" />
+                                             </children>
+                                          </Pane>
+                                       </children>
+                                    </AnchorPane>
+                                 </content></Tab>
+                            <Tab fx:id="tabOvelse" text="Øvelse">
+                                 <content>
+                                    <AnchorPane>
+                                       <children>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Pane prefHeight="531.0" prefWidth="898.0">
+                                                   <children>
+                                                      <Text layoutX="43.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Legg til apparatøvelse:" wrappingWidth="223.8339922428131">
+                                                         <font>
+                                                            <Font size="20.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <TextField fx:id="txtApparatOvelse" layoutX="47.0" layoutY="79.0" prefHeight="34.0" prefWidth="216.0" />
+                                                      <Button fx:id="btAddApparatOvelse" layoutX="47.0" layoutY="322.0" mnemonicParsing="false" onAction="#addApparatOvelse" prefHeight="25.0" prefWidth="130.0" text="Legg til øvelse" />
+                                                      <Text layoutX="47.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Øvelsesgruppe" wrappingWidth="165.3339922428131">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text layoutX="47.0" layoutY="237.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tilhørende apparat" wrappingWidth="165.3339922428131">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text layoutX="475.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Legg til friøvelse:" wrappingWidth="223.8339922428131">
+                                                         <font>
+                                                            <Font size="20.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <TextField fx:id="txtFriOvelse" layoutX="475.0" layoutY="79.0" prefHeight="34.0" prefWidth="216.0" />
+                                                      <Text layoutX="475.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Øvelsesgruppe" wrappingWidth="165.3339922428131">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Button fx:id="btAddFriOvelse" layoutX="475.0" layoutY="322.0" mnemonicParsing="false" onAction="#addFriOvelse" prefHeight="25.0" prefWidth="130.0" text="Legg til øvelse" />
+                                                      <TextField fx:id="txtFriBeskrivelse" alignment="TOP_LEFT" layoutX="475.0" layoutY="226.0" prefHeight="87.0" prefWidth="356.0" promptText="Beskrivelse..." />
+                                                   </children>
+                                                </Pane>
+                                             </children>
+                                          </HBox>
+                                          <TextField fx:id="txtOvelsesGruppeApparat" layoutX="45.0" layoutY="169.0" prefHeight="25.0" prefWidth="220.0" />
+                                          <TextField fx:id="txtApparatTilOvelse" layoutX="45.0" layoutY="255.0" prefHeight="25.0" prefWidth="220.0" />
+                                          <TextField fx:id="txtOvelsesGruppeFri" layoutX="475.0" layoutY="169.0" prefHeight="25.0" prefWidth="220.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </content></Tab>
+                              <Tab fx:id="tabApparat" text="Apparat">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Pane layoutY="-6.0" prefHeight="568.0" prefWidth="900.0">
+                                             <children>
+                                                <Text layoutX="67.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Legg til apparat:" wrappingWidth="165.3339922428131">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text layoutX="67.0" layoutY="184.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Beskrivelse" wrappingWidth="165.3339922428131">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Text>
+                                                <TextField fx:id="txtBeskrivelse" alignment="TOP_LEFT" layoutX="67.0" layoutY="203.0" prefHeight="189.0" prefWidth="293.0" />
+                                                <Button fx:id="btAddApparat" layoutX="67.0" layoutY="426.0" mnemonicParsing="false" onAction="#addApparat" prefHeight="34.0" prefWidth="176.0" text="Legg til apparat" />
+                                             </children>
+                                          </Pane>
+                                          <TextField fx:id="txtApparat" layoutX="67.0" layoutY="99.0" prefHeight="34.0" prefWidth="216.0" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                              <Tab fx:id="tabOvelsesGruppe" text="Øvelsesgruppe">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Pane prefHeight="560.0" prefWidth="900.0">
+                                             <children>
+                                                <Text layoutX="514.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sjekk øvelsesgrupper" wrappingWidth="224.8339922428131">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text layoutX="514.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Øvelser innen denne gruppen" wrappingWidth="285.8339922428131">
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                </Text>
+                                                <TextField fx:id="txtOvelseGruppe" alignment="TOP_LEFT" layoutX="514.0" layoutY="197.0" prefHeight="282.0" prefWidth="257.0" />
+                                                <Button fx:id="btSokGrupper" layoutX="779.0" layoutY="99.0" mnemonicParsing="false" onAction="#sokIGruppe" prefHeight="25.0" prefWidth="79.0" text="Søk" />
+                                                <Text layoutX="56.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Opprett øvelsesgruppe" wrappingWidth="224.8339922428131">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Text>
+                                                <TextField fx:id="txtNavnGruppe" layoutX="56.0" layoutY="98.0" prefHeight="34.0" prefWidth="252.0" promptText="Navn">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </TextField>
+                                                <Button fx:id="btOpprettOvelsesGruppe" layoutX="56.0" layoutY="154.0" mnemonicParsing="false" onAction="#opprettOvelsesGruppe" prefHeight="25.0" prefWidth="117.0" text="Opprett" />
+                                                <TextField fx:id="txtSokGruppe" layoutX="514.0" layoutY="94.0" prefHeight="34.0" prefWidth="252.0">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </TextField>
+                                             </children>
+                                          </Pane>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                              <Tab fx:id="tabOversiktOkter" text="Oversikt økter">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <HBox layoutY="136.0" prefHeight="359.0" prefWidth="900.0">
+                                             <children>
+                                                <TableView fx:id="tblvOkter" prefHeight="359.0" prefWidth="900.0">
+                                                  <columns>
+                                                    <TableColumn fx:id="tblcDato" prefWidth="101.5" text="Dato" />
+                                                    <TableColumn fx:id="tblcTidspunkt" prefWidth="91.5" text="Tidspunkt" />
+                                                      <TableColumn fx:id="tblcVarighet" prefWidth="111.0" text="Varighet (min)" />
+                                                      <TableColumn fx:id="tblcForm" prefWidth="75.0" text="Form" />
+                                                      <TableColumn fx:id="tblcPrestasjon" prefWidth="88.0" text="Prestasjon" />
+                                                      <TableColumn fx:id="tblcNotat" prefWidth="428.5" text="Notat" />
+                                                  </columns>
+                                                </TableView>
+                                             </children>
+                                          </HBox>
+                                          <Pane prefHeight="137.0" prefWidth="900.0">
+                                             <children>
+                                                <TextField fx:id="txtNSisteOkter" layoutX="31.0" layoutY="44.0" prefHeight="25.0" prefWidth="195.0" promptText="Velg n antall siste økter" />
+                                                <Button fx:id="btSokNSiste" layoutX="31.0" layoutY="80.0" mnemonicParsing="false" onAction="#initTable" prefHeight="25.0" prefWidth="79.0" text="Søk" />
+                                             </children>
+                                          </Pane>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                              <Tab fx:id="tabLogg" text="Øvelse Logg">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Pane prefHeight="560.0" prefWidth="900.0">
+                                             <children>
+                                                <Text layoutX="33.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Velg tidsperiode" wrappingWidth="165.3339922428131">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Text>
+                                                <HBox layoutX="1.0" layoutY="188.0" prefHeight="343.0" prefWidth="898.0">
+                                                   <children>
+                                                      <TableView fx:id="tblvOvelseOversikt" prefHeight="343.0" prefWidth="905.0">
+                                                        <columns>
+                                                          <TableColumn fx:id="tblcDatoLogg" prefWidth="136.0" text="Dato" />
+                                                          <TableColumn fx:id="tblcNavnLogg" prefWidth="181.5" text="Navn" />
+                                                            <TableColumn fx:id="tblcKiloLogg" prefWidth="95.0" text="Antall kilo" />
+                                                            <TableColumn fx:id="tblcSettLogg" prefWidth="86.0" text="Antall sett" />
+                                                            <TableColumn fx:id="tblcBeskrivelseLogg" prefWidth="398.0" text="Beskrivelse" />
+                                                        </columns>
+                                                      </TableView>
+                                                   </children>
+                                                </HBox>
+                                                <Text layoutX="33.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Velg øvelse" wrappingWidth="165.3339922428131">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Text>
+                                                <Button fx:id="btSokOvelser" layoutX="283.0" layoutY="127.0" mnemonicParsing="false" onAction="#sokOvelseLogg" prefHeight="25.0" prefWidth="91.0" text="Søk" />
+                                                <TextField fx:id="txtFra" layoutX="39.0" layoutY="62.0" prefHeight="25.0" prefWidth="173.0" promptText="Fra (dd-mm-yyyy)" />
+                                                <TextField fx:id="txtTil" layoutX="259.0" layoutY="62.0" prefHeight="25.0" prefWidth="173.0" promptText="Til (dd-mm-yyyy)" />
+                                                <TextField fx:id="txtVelgOvelse" layoutX="39.0" layoutY="127.0" prefHeight="24.0" prefWidth="184.0" />
+                                             </children>
+                                          </Pane>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                          </tabs>
+                        </TabPane>
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
