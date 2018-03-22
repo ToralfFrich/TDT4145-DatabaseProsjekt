@@ -1,3 +1,4 @@
+
 package prosjekt_del2;
 
 import java.sql.Connection;
@@ -214,3 +215,4 @@ public class Sporringer {
     }
     */
 }
+
