@@ -279,6 +279,8 @@ public class FxAppController extends Application {
 	// -----------------------------------------------------------
 	
 	public static void main(String[] args) {
+		// DatabaseOperations data = new DatabaseOperations();
+        // data.connect();
 		launch(args);
 	}
 	
