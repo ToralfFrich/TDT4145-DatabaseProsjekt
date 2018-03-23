@@ -117,31 +117,37 @@ public class FxAppController extends Application {
 	public void leggTilOvelserITreningsokt() throws SQLException, NumberFormatException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		// Bytt ut lista her
 		for (Ovelse ovelse : DatabaseOperations.getOvelser(DBConnection.createDBConnection())) {
-			if (txtOvelseNavn.getText().equals(ovelse.getOvelsesnavn())) {
-				if (ovelse instanceof ApparatOvelse) {
-					System.out.println("Den skjonte at det var et Apparat, digg");
-					ApparatOvelse ovelseIOkt = new ApparatOvelse(ovelse.getOvelsesnavn());
-					ovelseIOkt.setAntallKilo(Integer.parseInt(txtKilo.getText()));
-					ovelseIOkt.setAntallSett(Integer.parseInt(txtSett.getText()));
-					// Bytt ut lista her
-					for (Apparat apparat : DatabaseOperations.getApparater(conn)) {
-						if (apparat.getNavn().equals(txtApparatValg.getText())) {
-							ovelseIOkt.setApparat(apparat);
+			for (Ovelse ovelsesomharblittgjort : DatabaseOperations.getOvelserSomHarBlittGjort(DBConnection.createDBConnection())){
+				if (ovelse.getOvelsesnavn().equals(ovelsesomharblittgjort.getOvelsesnavn())){
+					if (txtOvelseNavn.getText().equals(ovelse.getOvelsesnavn())) {
+						if (ovelse instanceof ApparatOvelse) {
+							System.out.println("Den skjonte at det var et Apparat, digg");
+							ApparatOvelse ovelseIOkt = new ApparatOvelse(ovelse.getOvelsesnavn());
+							ovelseIOkt.setAntallKilo(Integer.parseInt(txtKilo.getText()));
+							ovelseIOkt.setAntallSett(Integer.parseInt(txtSett.getText()));
+							// Bytt ut lista her
+							for (Apparat apparat : DatabaseOperations.getApparater(conn)) {
+								if (apparat.getNavn().equals(txtApparatValg.getText())) {
+									ovelseIOkt.setApparat(apparat);
+								}
+							}
+							DatabaseOperations.addOvelseITreningsOkt(conn, DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getDato(), 
+									DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getStartTidspunkt(), ovelseIOkt.getOvelsesnavn());
+							// Vi har ikke brukt objektet her, bare navnet, burde sende inn objektet i databasen, som har kilo osv. 
+							// Burde endre hva add-metoden gjor
+							// treningsOkter.get(treningsOkter.size() - 1).getOvelser().add(ovelseIOkt);
+						}
+						else {
+							FriOvelse ovelseIOkt = new FriOvelse(ovelse.getOvelsesnavn(), ((FriOvelse) ovelse).getBeskrivelse());
+							DatabaseOperations.addOvelseITreningsOkt(conn, DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getDato(), 
+									DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getStartTidspunkt(), ovelseIOkt.getOvelsesnavn());
+							// treningsOkter.get(treningsOkter.size() - 1).getOvelser().add(ovelseIOkt);
 						}
 					}
-					DatabaseOperations.addOvelseITreningsOkt(conn, DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getDato(), 
-							DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getStartTidspunkt(), ovelseIOkt.getOvelsesnavn());
-					// Vi har ikke brukt objektet her, bare navnet, burde sende inn objektet i databasen, som har kilo osv. 
-					// Burde endre hva add-metoden gjor
-					// treningsOkter.get(treningsOkter.size() - 1).getOvelser().add(ovelseIOkt);
 				}
-				else {
-					FriOvelse ovelseIOkt = new FriOvelse(ovelse.getOvelsesnavn(), ((FriOvelse) ovelse).getBeskrivelse());
-					DatabaseOperations.addOvelseITreningsOkt(conn, DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getDato(), 
-							DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getStartTidspunkt(), ovelseIOkt.getOvelsesnavn());
-					// treningsOkter.get(treningsOkter.size() - 1).getOvelser().add(ovelseIOkt);
-				}
+				
 			}
+			
 		}
 		int storrelse = DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getOvelser().size();
 		listeMedOvelser += DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getOvelser().get(storrelse - 1).getOvelsesnavn() + ", ";
@@ -259,7 +265,7 @@ public class FxAppController extends Application {
 		tblcForm.setCellValueFactory(new PropertyValueFactory<TreningsOkt, Integer>("personligForm"));
 		tblcPrestasjon.setCellValueFactory(new PropertyValueFactory<TreningsOkt, Integer>("prestasjon"));
 		
-		txtTotAntallOkter.setText(String.valueOf(DatabaseOperations.getTotalTreningsOkter(conn)));
+		txtTotAntallOkter.setText(String.valueOf(DatabaseOperations.getTotalTreningsokter(conn)));
 		tblvOkter.setItems(getOkter(antall));
 	}
 	
@@ -310,9 +316,7 @@ public class FxAppController extends Application {
 	// Main
 	// -----------------------------------------------------------
 	
-	public static void main(String[] args) {
-		// DatabaseOperations data = new DatabaseOperations();
-        // data.connect();
+	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		launch(args);
 	}
 	
