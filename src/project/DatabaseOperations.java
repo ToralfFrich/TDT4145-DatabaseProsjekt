@@ -2,7 +2,10 @@ package project;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import prosjekt_del2.InsertIntoDatabase;
     
@@ -104,6 +107,11 @@ import prosjekt_del2.InsertIntoDatabase;
     	///////////////////////ALLE ADDS LAGT TIL////////////////////////
     	
     	
+    	
+    	
+    	///////////////////////EIRIK VIL HA GETS, SÅ DA GØNNER VI PÅ////////////////////
+    	
+    	///////////////////////DENNE ER ET KRAV/////////////////// FERDIG
     	//Hente de n siste Treningsøkter med all informasjon
     	public static List<TreningsOkt> getNSisteTreningsOkter(Connection connection, int n) throws SQLException{
     		
@@ -119,12 +127,6 @@ import prosjekt_del2.InsertIntoDatabase;
     		
     		//Legger inn de n siste treningsøkter inn i en liste med treningsøkter.
     		while(rs.next()) {
-    			System.out.println(rs.getDate("dato"));
-        		System.out.println(rs.getTime("tidspunkt"));
-    			System.out.println(rs.getInt("varighet"));
-    			System.out.println(rs.getInt("personligForm"));
-    			System.out.println(rs.getInt("prestasjon"));
-    			System.out.println(rs.getString("notat"));
     			TreningsOkt t = new TreningsOkt(rs.getDate("dato"), rs.getTime("tidspunkt"), 
     			rs.getInt("varighet"), rs.getInt("personligForm"), rs.getInt("prestasjon"), rs.getString("notat"));
     			treningsOkter.add(t);
@@ -133,53 +135,189 @@ import prosjekt_del2.InsertIntoDatabase;
     		return treningsOkter;
     	}
     	
+    	
+    	///////////////Hente ut øvelse x mellom to datoer y og z/////////////////
+  	
+    	public List<Ovelse> getInfoAboutOvelseInTimeInterval(Connection connection, String ovelsesnavn, Date startsDato, Date sluttdato) throws SQLException{
+  		
+    		List<Ovelse> ovelser = new ArrayList<>();
+  		
+    		//Sjekker først om det finnes noen ovelsesnavn i apparatøvelse. Hvis det gjør det så execute kode
+    		Statement prepStatement = connection.createStatement();
+  		
+  		
+    		//Dette querystatementet er gjennomtestet, og det funker gull
+    		ResultSet rs = prepStatement.executeQuery("select count(*) from apparatovelse where ovelsesnavn like" + ovelsesnavn);
+    		//Må ha rs.next() fordi den nullindekserer.
+  		
+    		//Må legge til at den henter mellom to datoer.
+    		rs.next();
+    		if (rs.getInt(1) > 0){
+    			ResultSet resultat = prepStatement.executeQuery("select * from ovelseITreningsokt JOIN "
+    					+ "apparatovelse on (apparatovelse.ovelsesnavn =" + ovelsesnavn + ")");
+  						//ApparatOvelse apparatovelse = new ApparatOvelse(resultat.getString("ovelsesnavn"), 
+  						//resultat.getInt("antallKilo"), resultat.getInt("antallSett"), new Apparat(resultat.getString("apparatNavn"));
+  			
+    		}
+    		/*
+  			//Sjekker deretter for det samme i friøvelse
+  			rs = prepStatement.executeQuery("select count(*) from friovelse where ovelsesnavn like" + ovelsesnavn);
+  			rs.next();
+  			if (rs.getInt(1) > 0){
+  				ResultSet resultat = prepStatement.executeQuery("select * from ovelseITreningsokt JOIN "
+  						+ "friovelse on (friovelse.ovelsesnavn =" + ovelsesnavn + ")");
+  				FriOvelse friovelse = new FriOvelse(resultat.getString("ovelsesnavn"), resultat.getString("beskrivelse"));
+  				ovelser
+  			}
+    		 */
+			return null;
+  		
+    	}
+    	
+    	
+    	public static List<Ovelsesgruppe> getExerciseGroups(Connection conn) throws SQLException{
+    		List<Ovelsesgruppe> groups = new ArrayList<>();
+    		
+    		//Spørr om alle koblingene mellom en Øvelse og en ØvelsesGruppe
+    		String stmt = "Select * from ovelseIOvelsesgruppe";
+    		PreparedStatement prepStat = conn.prepareStatement(stmt);
+    		ResultSet rs = prepStat.executeQuery();
+    		
+    		//Lag en map hvor Ovelsesgruppenavn er key og ArrayList med ovelsesnavn er value
+    		Map<String,ArrayList<String>> map = new HashMap<String,ArrayList<String>>();
+    		while(rs.next()) {
+    			if(map.containsKey(rs.getString("ovelsesgruppenavn"))) {
+    				map.get(rs.getString("ovelsesgruppenavn"));
+    				
+    			}
+    			else {
+    				map.put(rs.getString("ovelsesgruppenavn"), new ArrayList<String>(Arrays.asList(rs.getString("exersicename"))));
+    			}
+    		}
+    		
+    		//Lag objekter ut av mappen
+    		for(String gruppenavn : map.keySet()) {
+    			List<Exercise> exercises = new ArrayList<Exercise>();
+    			for(String exercisename : map.get(gruppenavn)) {
+    				//Hen exercise beskrivelse
+    				String tmpStmt = "Select * from exercise where navn = ?";
+    				PreparedStatement pr = conn.prepareStatement(tmpStmt);
+    				pr.setString(1, exercisename);
+    				ResultSet tmpRes = pr.executeQuery();
+    				if(tmpRes.next()) {
+    					Ovelse o = new Ovelse(exercisename,tmpRes.getString("beskrivelse"));
+    					exercises.add(o);
+    				}
+    				
+    			}
+    			groups.add(new Ovelsesgruppe(gruppenavn,exercises));
+    		}
+    		return groups;
+    	}
+    	
+    	
+    	//Henter ut treningsøkter////FERDIG
+    	public static List<TreningsOkt> getTreningsøkter(Connection connection) throws SQLException{
+    		
+    		List<TreningsOkt> treningsOkter = new ArrayList<TreningsOkt>();
+    		
+    		String stmt = "select * from treningsokt";
+    		PreparedStatement prepStat = connection.prepareStatement(stmt);
+    		ResultSet rs = prepStat.executeQuery();
+    		
+    		while(rs.next()) {
+    			TreningsOkt t = new TreningsOkt(rs.getDate("dato"), rs.getTime("tidspunkt"), 
+    			rs.getInt("varighet"), rs.getInt("personligForm"), rs.getInt("prestasjon"), rs.getString("notat"));
+    			treningsOkter.add(t);
+    		}
+    		
+    		return treningsOkter;
+    	}
+    	
+    	
+    	
+    	
+    	
+    	//Henter ut apparater////FERDIG
+    	public static List<Apparat> getApparater(Connection connection) throws SQLException{
+    		
+    		//Oppretter list med apparater
+    		List<Apparat> apparater = new ArrayList<>();
+    		
+    		//Henter ut apparater
+    		String queryStatement = "select * from apparat";
+    		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
+    		ResultSet rs = prepStat.executeQuery();
+    		
+    		//Resultset starter på index 0, vi må finne neste
+    		while(rs.next()){
+    			Apparat apparat = new Apparat(rs.getString(1), rs.getString(2));
+    			apparater.add(apparat);
+    		}
+    		
+			return apparater;
+    		
+    	}
+    	
+    	
+    	
+    	
+    	
+    	
+    	public static List<Ovelsesgruppe> getOvelsesgrupper(Connection connection) throws SQLException{
+    		
+    		//Oppretter list med OvelsesGrupper
+    		List<Ovelsesgruppe> ovelsesgrupper = new ArrayList<>();
+    		
+    		//Henter ut OvelsesGrupper
+    		String queryStatement = "select * from ovelsesgruppe";
+    		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
+    		ResultSet rs = prepStat.executeQuery();
+    		
+    		while(rs.next()){
+    			Ovelsesgruppe ovelsesgruppe = new Ovelsesgruppe(rs.getString(2));
+    			ovelsesgruppe.addOvelseIOvelsesgruppe(rs.getString(1));
+    		}
+    		
+			return apparater;
+    		
+    	}
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	///////////////////MAIN ////////////////
     	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 			//System.out.println(getNSisteTreningsøkter(DBConnection.createDBConnection(), 3));
     		//DatabaseOperations.addApparatØvelse(DBConnection.createDBConnection(), "hei", "90", "5", "hola");
-
+    		/*
     		Statement prepStatement = DBConnection.createDBConnection().createStatement();
     		ResultSet rs = prepStatement.executeQuery("select count(*) from apparatovelse where ovelsesnavn like 'hei'");
     		System.out.println(rs);
     		rs.next();
     		System.out.println(rs.getInt(1));
+    		*/
+    		DatabaseOperations.addApparat(DBConnection.createDBConnection(), "Hei", "Dette er en test");
+    		System.out.println(DatabaseOperations.getApparater(DBConnection.createDBConnection()));
 		}
+    	
+    	
 
     	
     	
     	
-    	///////////Hente ut siste N treningsøkter lagt til///////////////
     	
-    	////////Hente ut øvelse x mellom alle datoer 
     	
-    	public List<Ovelse> getInfoAboutOvelseInTimeInterval(Connection connection, String ovelsesnavn, Date startsDato, Date sluttdato) throws SQLException{
-    		
-    		//Sjekker først om det finnes noen ovelsesnavn i apparatøvelse. Hvis det gjør det så execute kode
-    		Statement prepStatement = connection.createStatement();
-    		
-    		//Dette querystatementet er gjennomtestet, og det funker gull
-    		ResultSet rs = prepStatement.executeQuery("select count(*) from apparatovelse where ovelsesnavn like" + ovelsesnavn);
-    		//Må ha rs.next() fordi den nullindekserer.
-    		rs.next();
-    		if (rs.getInt(1) > 0){
-    			ResultSet resultat = prepStatement.executeQuery("select * from ovelseITreningsokt JOIN apparatovelse on (ovelseITreningsOkt.ovelsesnavn = apparatovelse.ovelsesnavn)");
-    		}
-    		
-    		//Sjekker deretter for det samme i friøvelse
-    		rs = prepStatement.executeQuery("select count(*) from friovelse where ovelsesnavn like" + ovelsesnavn);
-    		rs.next();
-    		if (rs.getInt(1) > 0){
-    			
-    		}
-    		
-    		
-    		String checkApparatOvelse = "SELECT ovelsesnavn(COUNT(1) AS BIT) FROM apparatovelse WHERE (ovelsesnavn == ovelsesnavn)";
-    		String checkFriOvelse = "SELECT ovelsesnavn(COUNT(1) AS BIT) FROM friovelse WHERE (ovelsesnavn == ovelsesnavn)";
-    		//String friØvelseQueryStatement = "select ovelsesnavn from friøvelse where  "startsDato" and "sluttDato"";
-    		//String apparatØvelseQueryStatement = "select "
-    		
-			return null;
-    		
-    	}
+    	
+    	
+    	
+    	
+    	
     	
     	
     	
