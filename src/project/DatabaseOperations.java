@@ -281,7 +281,7 @@ import java.util.ArrayList;
     	
     	//KRAV 5///////////HVOR MANGE TRENINGSØKTER TOTALT/////////
     	
-    	public static int getTotalTreningsøkter(Connection conn) throws SQLException {
+    	public static int getTotalTreningsOkter(Connection conn) throws SQLException {
     		String stmt  = "select count(dato) as total from treningsokt";
     		PreparedStatement pr = conn.prepareStatement(stmt);
     		ResultSet rs = pr.executeQuery();
@@ -314,7 +314,7 @@ import java.util.ArrayList;
     	
 
     	//Henter ut treningsøkter////FERDIG
-    	public static List<TreningsOkt> getTreningsøkter(Connection connection) throws SQLException{
+    	public static List<TreningsOkt> getTreningsOkter(Connection connection) throws SQLException{
     		
     		List<TreningsOkt> treningsOkter = new ArrayList<TreningsOkt>();
     		
