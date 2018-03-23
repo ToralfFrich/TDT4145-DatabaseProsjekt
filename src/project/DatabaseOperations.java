@@ -49,8 +49,8 @@ import prosjekt_del2.InsertIntoDatabase;
     		//Sjekker om ovelse allerede finnes i ovelse-db
     		while(rs.next()){
     			Ovelse ovelse = new Ovelse(rs.getString("ovelsesnavn"));
-    			if (ovelser.contains(ovelse)){
-    				System.out.println("Denne øvelsen finnes allerede i databasen.");
+    			if (ovelse.getOvelsesnavn().equals(ovelsesnavn)){
+    				System.out.println("Denne ovelsen finnes alt!");
     				return;
     			}
     		}
