@@ -161,7 +161,9 @@ import prosjekt_del2.InsertIntoDatabase;
     		//Må ha rs.next() fordi den nullindekserer.
     		rs.next();
     		if (rs.getInt(1) > 0){
-    			ResultSet resultat = prepStatement.executeQuery("select * from øvelseITreningsøkt JOIN apparatøvelse on (øvelseITreningsøkt.øvelsesnavn = apparatøvelse.øvelsesnavn)");
+    			ResultSet resultat = prepStatement.executeQuery("select * from øvelseITreningsøkt JOIN "
+    					+ "apparatøvelse on (øvelseITreningsøkt.øvelsesnavn =" + ovelsesnavn + ")");
+    			
     		}
     		
     		//Sjekker deretter for det samme i friøvelse

@@ -1,5 +1,6 @@
 package project;
 
+import java.sql.SQLException;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -104,7 +105,7 @@ public class FxAppController extends Application {
 		return tiden;
 	}
 	
-	public void lagOkt() {
+	public void lagOkt() throws NumberFormatException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		DatabaseOperations.addTreningsØkt(DBConnection.createDBConnection(), stringToDate(txtDato.getText()), 
 				stringToTime(txtTidspunkt.getText()), Integer.parseInt(txtVarighet.getText()), 
 				Integer.parseInt(txtPersonligForm.getText()), Integer.parseInt(txtPrestasjon.getText()), txtNotat.getText());
