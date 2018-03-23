@@ -10,6 +10,12 @@ public class Apparat {
 		this.beskrivelse = beskrivelse;
 	}
 	
+	
+	//Brukes i finn øvelse mellom to datoer og vis info.
+	public Apparat(String navn){
+		this.navn = navn;
+	}
+	
 	public String getNavn() {
 		return this.navn;
 	}

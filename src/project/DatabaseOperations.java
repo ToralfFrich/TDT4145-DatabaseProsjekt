@@ -12,7 +12,7 @@ import prosjekt_del2.InsertIntoDatabase;
     public class DatabaseOperations {
         
     	
-    	/////////KRAV 1 - Legge til alt i Database///////////
+    	//KRAV 1/////////Legge til alt i Database///////////
     	
     	
     	//Legg til apparat
@@ -31,12 +31,17 @@ import prosjekt_del2.InsertIntoDatabase;
     		//Execute for å kjøre kode.
     		prepStat.execute();
     		System.out.println("Apparat lagt til");
+    		
     	}
     	
     	
+    	
+    	
     	//Legg til apparatøvelse
-    	public static void addApparatOvelse(Connection connection, String ovelsesnavn, String antallKilo, String antallSett, String apparatNavn) throws SQLException{
-    		String queryStatement = "INSERT INTO apparatovelse(ovelsesnavn, antallKilo, antallSett, apparatNavn) VALUES(?,?,?,?)";
+    	public static void addApparatOvelse(Connection connection, String ovelsesnavn, 
+    			String antallKilo, String antallSett, String apparatNavn) throws SQLException{
+    		String queryStatement = "INSERT INTO apparatovelse(ovelsesnavn, antallKilo, "
+    				+ "antallSett, apparatNavn) VALUES(?,?,?,?)";
     		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
     		
     		prepStat.setString(1, ovelsesnavn);
@@ -45,7 +50,10 @@ import prosjekt_del2.InsertIntoDatabase;
     		prepStat.setString(4, apparatNavn);
     		prepStat.execute();
     		System.out.println("ApparatOvelse lagt til ");
+    		
     	}
+    	
+    	
     	
     	
     	//Legg til friøvelse
@@ -57,12 +65,16 @@ import prosjekt_del2.InsertIntoDatabase;
     		prepStat.setString(2, beskrivelse);
     		prepStat.execute();
     		System.out.println("Fri Ovelse lagt til");
+    		
     	}
     	
     	
+    	
     	//Legg til treningsøkt
-    	public static void addTreningsOkt(Connection connection, Date dato, Time time, int duration, int personligForm, int prestasjon, String notat ) throws SQLException{
-    		String preQueryStatement = "INSERT INTO treningsokt(dato, tidspunkt, varighet, personligform, prestasjon, notat) VALUES (?,?,?,?,?,?)";
+    	public static void addTreningsOkt(Connection connection, Date dato, Time time, 
+    			int duration, int personligForm, int prestasjon, String notat ) throws SQLException{
+    		String preQueryStatement = "INSERT INTO treningsokt(dato, tidspunkt, varighet, "
+    				+ "personligform, prestasjon, notat) VALUES (?,?,?,?,?,?)";
     		PreparedStatement prepStat = connection.prepareStatement(preQueryStatement);
     		
     		prepStat.setDate(1,dato);
@@ -78,8 +90,10 @@ import prosjekt_del2.InsertIntoDatabase;
     	}
     	
     	
+    	
     	//Legg til øvelse i treningsøkt
-    	public static void addOvelseITreningsOkt(Connection connection, Date dato, Time tidspunkt, String ovelsesnavn) throws SQLException{
+    	public static void addOvelseITreningsOkt(Connection connection, Date dato, 
+    			Time tidspunkt, String ovelsesnavn) throws SQLException{
     		String queryStatement = "INSERT INTO ovelseITreningsokt(dato, tidspunkt, ovelsesnavn) VALUES (?,?,?)";
     		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
     		
@@ -92,8 +106,10 @@ import prosjekt_del2.InsertIntoDatabase;
     	}
     	
     	
+    	
     	//Legg til øvelse i øvelsesgruppe
-    	public static void addOvelseIOvelsesgruppe(Connection connection, String ovelsesnavn, String ovelsesgruppe) throws SQLException{
+    	public static void addOvelseIOvelsesgruppe(Connection connection, String ovelsesnavn, 
+    			String ovelsesgruppe) throws SQLException{
     		String queryStatement = "INSERT INTO ovelseIOvelsesgruppe(dato, tidspunkt, ovelsesnavn) VALUES (?,?,?)";
     		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
     		
@@ -104,15 +120,23 @@ import prosjekt_del2.InsertIntoDatabase;
     		System.out.println("Ovelse lagt i ovelsesgruppe");
     	}
     	
-    	///////////////////////ALLE ADDS LAGT TIL////////////////////////
     	
     	
+    	//Legg til ovelsesgruppe
+    	public void addOvelsegruppe(Connection connection, String Ovelsesgruppenavn) throws SQLException {
+            String queryStatement = "insert into ovelsesgruppe (ovelsesgruppenavn) VALUES (?)";
+            PreparedStatement prepStat = connection.prepareStatement(queryStatement);
+            
+            prepStat.setString(1, Ovelsesgruppenavn);
+            
+            prepStat.executeUpdate();
+            System.out.println("Ovelsesgruppe lagt til");
+        }
     	
+
+
+    	//KRAV 2//////Hente de n siste Treningsøkter med all informasjon/////////
     	
-    	///////////////////////EIRIK VIL HA GETS, SÅ DA GØNNER VI PÅ////////////////////
-    	
-    	///////////////////////DENNE ER ET KRAV/////////////////// FERDIG
-    	//Hente de n siste Treningsøkter med all informasjon
     	public static List<TreningsOkt> getNSisteTreningsOkter(Connection connection, int n) throws SQLException{
     		
     		List<TreningsOkt> treningsOkter = new ArrayList<TreningsOkt>();
@@ -136,43 +160,91 @@ import prosjekt_del2.InsertIntoDatabase;
     	}
     	
     	
-    	///////////////Hente ut øvelse x mellom to datoer y og z/////////////////
+
+    	//KRAV 3///////////////Hente ut øvelse x mellom to datoer y og z/////////////////
   	
-    	public List<Ovelse> getInfoAboutOvelseInTimeInterval(Connection connection, String ovelsesnavn, Date startsDato, Date sluttdato) throws SQLException{
+    	@SuppressWarnings("resource")
+		public static List<Ovelse> getInfoAboutOvelseInTimeInterval(Connection connection, String ovelsesnavn, Date startsDato, Date sluttDato) throws SQLException{
   		
     		List<Ovelse> ovelser = new ArrayList<>();
   		
     		//Sjekker først om det finnes noen ovelsesnavn i apparatøvelse. Hvis det gjør det så execute kode
-    		Statement prepStatement = connection.createStatement();
-  		
-  		
-    		//Dette querystatementet er gjennomtestet, og det funker gull
-    		ResultSet rs = prepStatement.executeQuery("select count(*) from apparatovelse where ovelsesnavn like" + ovelsesnavn);
-    		//Må ha rs.next() fordi den nullindekserer.
-  		
-    		//Må legge til at den henter mellom to datoer.
+    		String queryStatement = "select count(*) from apparatovelse where ovelsesnavn = ?";
+    		PreparedStatement preStat = connection.prepareStatement(queryStatement);
+    		preStat.setString(1, ovelsesnavn);
+    		ResultSet rs = preStat.executeQuery();
+
     		rs.next();
+    		System.out.println(rs);
     		if (rs.getInt(1) > 0){
-    			ResultSet resultat = prepStatement.executeQuery("select * from ovelseITreningsokt JOIN "
-    					+ "apparatovelse on (apparatovelse.ovelsesnavn =" + ovelsesnavn + ")");
-  						//ApparatOvelse apparatovelse = new ApparatOvelse(resultat.getString("ovelsesnavn"), 
-  						//resultat.getInt("antallKilo"), resultat.getInt("antallSett"), new Apparat(resultat.getString("apparatNavn"));
-  			
+    			/////SJUUUUUK SPØRRING//////
+    			queryStatement = "select dato, tidspunkt, antallKilo, antallSett, apparatNavn from ovelseITreningsokt JOIN "
+    					+ "apparatovelse on (apparatovelse.ovelsesnavn = ovelseITreningsokt.ovelsesnavn) "
+    					+ "and dato >= ? and dato < ? and apparatovelse.ovelsesnavn = ?";
+    			preStat = connection.prepareStatement(queryStatement);
+    			preStat.setDate(1, startsDato);
+    			preStat.setDate(2, sluttDato);
+    			preStat.setString(3, ovelsesnavn);
+    			
+    			ResultSet resultat = preStat.executeQuery();
+    			while (resultat.next()){
+ 
+    				ApparatOvelse apparatovelse = new ApparatOvelse(ovelsesnavn, 
+    				resultat.getInt("antallKilo"), resultat.getInt("antallSett"), new Apparat(resultat.getString("apparatNavn")));
+    		  		ovelser.add(apparatovelse);
+    			}
+    			return ovelser;
     		}
-    		/*
-  			//Sjekker deretter for det samme i friøvelse
-  			rs = prepStatement.executeQuery("select count(*) from friovelse where ovelsesnavn like" + ovelsesnavn);
-  			rs.next();
-  			if (rs.getInt(1) > 0){
-  				ResultSet resultat = prepStatement.executeQuery("select * from ovelseITreningsokt JOIN "
-  						+ "friovelse on (friovelse.ovelsesnavn =" + ovelsesnavn + ")");
-  				FriOvelse friovelse = new FriOvelse(resultat.getString("ovelsesnavn"), resultat.getString("beskrivelse"));
-  				ovelser
-  			}
-    		 */
+
+    		queryStatement = "select count(*) from friovelse where ovelsesnavn = ?";
+    		preStat = connection.prepareStatement(queryStatement);
+    		preStat.setString(1, ovelsesnavn);
+    		
+    		rs = preStat.executeQuery();
+    		rs.next();
+
+    		if (rs.getInt(1) > 0){
+    			queryStatement = "select dato, tidspunkt, beskrivelse from ovelseITreningsokt JOIN "
+    					+ "friovelse on (friovelse.ovelsesnavn = ovelseITreningsokt.ovelsesnavn) "
+    					+ "and dato >= ? and dato < ? and friovelse.ovelsesnavn = ?";
+    			preStat = connection.prepareStatement(queryStatement);
+    			preStat.setDate(1, startsDato);
+    			preStat.setDate(2, sluttDato);
+    			preStat.setString(3, ovelsesnavn);
+    			
+    			ResultSet resultat = preStat.executeQuery();
+    			while (resultat.next()){
+    				System.out.println("Da var vi inne her");
+    				FriOvelse friOvelse= new FriOvelse(ovelsesnavn, resultat.getString("beskrivelse"));
+    		  		ovelser.add(friOvelse);
+    			}
+    			return ovelser;
+    		}
 			return null;
   		
     	}
+    	
+    	
+    	//KRAV 4////////////
+    	
+    	
+    	///////////////////MAIN ////////////////
+    	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+			//System.out.println(getNSisteTreningsøkter(DBConnection.createDBConnection(), 3));
+    		//DatabaseOperations.addApparatØvelse(DBConnection.createDBConnection(), "hei", "90", "5", "hola");
+    		/*
+    		Statement prepStatement = DBConnection.createDBConnection().createStatement();
+    		ResultSet rs = prepStatement.executeQuery("select count(*) from apparatovelse where ovelsesnavn like 'hei'");
+    		System.out.println(rs);
+    		rs.next();
+    		System.out.println(rs.getInt(1));
+    		
+    		DatabaseOperations.addApparat(DBConnection.createDBConnection(), "Hei", "Dette er en test");
+    		System.out.println(DatabaseOperations.getApparater(DBConnection.createDBConnection()));
+    		System.out.println(getInfoAboutOvelseInTimeInterval(DBConnection.createDBConnection(), "heioghopp", new Date(1990-1900, 10, 20), new Date(2000-1900, 10, 20)));*/
+		}
+    	
+ /*   	
     	
     	
     	public static List<Ovelsesgruppe> getExerciseGroups(Connection conn) throws SQLException{
@@ -291,22 +363,7 @@ import prosjekt_del2.InsertIntoDatabase;
     	
     	
     	
-    	///////////////////MAIN ////////////////
-    	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-			//System.out.println(getNSisteTreningsøkter(DBConnection.createDBConnection(), 3));
-    		//DatabaseOperations.addApparatØvelse(DBConnection.createDBConnection(), "hei", "90", "5", "hola");
-    		/*
-    		Statement prepStatement = DBConnection.createDBConnection().createStatement();
-    		ResultSet rs = prepStatement.executeQuery("select count(*) from apparatovelse where ovelsesnavn like 'hei'");
-    		System.out.println(rs);
-    		rs.next();
-    		System.out.println(rs.getInt(1));
-    		*/
-    		DatabaseOperations.addApparat(DBConnection.createDBConnection(), "Hei", "Dette er en test");
-    		System.out.println(DatabaseOperations.getApparater(DBConnection.createDBConnection()));
-		}
-    	
-    	
+
 
     	
     	
@@ -324,7 +381,7 @@ import prosjekt_del2.InsertIntoDatabase;
     	
     	
 
- /*
+ 
 
     	public void printResultatlogg(Connection conn, String ovelsesnavn, String startdato, String sluttdato) { //skriver ut resultatlogg for apparatovelser
     		try{

@@ -222,7 +222,7 @@ public class FxAppController extends Application {
 	
 	// Nï¿½r fanen velges kjï¿½res denne, legger inn i choicebox
 	
-	// Siden vi har valgt å ikke bruke en table i database for OvelsesGruppe saa maa opprettOvelsesGruppe utgaa
+	// Siden vi har valgt ï¿½ ikke bruke en table i database for OvelsesGruppe saa maa opprettOvelsesGruppe utgaa
 	// Dette er egentlig et krav, men da gjoeres det slik at hver gang du lager et apparat saa legger man til en ovelsesgruppe,
 	// som String da som lagres i databasen. 
 	public void opprettOvelsesGruppe() {
@@ -233,10 +233,10 @@ public class FxAppController extends Application {
 		
 	}
 	
-	public void sokIGruppe() {
+	public void sokIOvelsesGruppe() {
 		txtOvelseGruppe.clear();
 		String listeOvelser = "";
-		// Her må man legge inn ovelserIOvelsesgrupper, og sjekke feltet for ovelsesgruppe om det stemmer med det som er skrevet inn
+		// Her mï¿½ man legge inn ovelserIOvelsesgrupper, og sjekke feltet for ovelsesgruppe om det stemmer med det som er skrevet inn
 		for (Ovelsesgruppe gruppe : ovelsesGrupper) {
 			if (txtSokGruppe.getText().equals(gruppe.getNavn())) {
 				for (Ovelse ovelse : gruppe.getOvelser()) {
