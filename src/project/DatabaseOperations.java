@@ -2,12 +2,7 @@ package project;
 
 import java.sql.*;
 import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import prosjekt_del2.InsertIntoDatabase;
     
     public class DatabaseOperations {
         
@@ -38,8 +33,6 @@ import prosjekt_del2.InsertIntoDatabase;
     	
     	//Legg til ovelse
     	public static void addOvelse(Connection connection, String ovelsesnavn) throws SQLException {
-    		
-    		List<Ovelse> ovelser = new ArrayList<>();
     		
     		String queryStatement = "select * from ovelse";
     		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
@@ -426,8 +419,9 @@ import prosjekt_del2.InsertIntoDatabase;
     		System.out.println(DatabaseOperations.getOvelsesgrupper(DBConnection.createDBConnection()));
     		
     		System.out.println(DatabaseOperations.getOvelser(DBConnection.createDBConnection()));
+    		
+    		DatabaseOperations.addOvelse(DBConnection.createDBConnection(), "testovelse2");
     		*/
-    		DatabaseOperations.addOvelse(DBConnection.createDBConnection(), "testøvelse");
 		}	
     	
     }
