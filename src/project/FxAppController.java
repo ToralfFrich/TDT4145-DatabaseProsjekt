@@ -1,5 +1,6 @@
 package project;
 
+import java.sql.SQLException;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -104,18 +105,18 @@ public class FxAppController extends Application {
 		return tiden;
 	}
 	
-	public void lagOkt() {
-		DatabaseOperations.addTreningsØkt(DBConnection.createDBConnection(), stringToDate(txtDato.getText()), 
+	public void lagOkt() throws NumberFormatException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		DatabaseOperations.addTreningsOkt(DBConnection.createDBConnection(), stringToDate(txtDato.getText()), 
 				stringToTime(txtTidspunkt.getText()), Integer.parseInt(txtVarighet.getText()), 
 				Integer.parseInt(txtPersonligForm.getText()), Integer.parseInt(txtPrestasjon.getText()), txtNotat.getText());
-		System.out.println("Økt laget");
+		System.out.println("Okt laget");
 	}
 	
 	public void leggTilOvelserIOkt() {
 		for (Ovelse ovelse : ovelser) {
 			if (txtOvelseNavn.getText().equals(ovelse.getOvelsesnavn())) {
 				if (ovelse instanceof ApparatOvelse) {
-					System.out.println("Den skj�nte at det var et Apparat, digg");
+					System.out.println("Den skjonte at det var et Apparat, digg");
 					ApparatOvelse ovelseIOkt = new ApparatOvelse(ovelse.getOvelsesnavn());
 					ovelseIOkt.setAntallKilo(Integer.parseInt(txtKilo.getText()));
 					ovelseIOkt.setAntallSett(Integer.parseInt(txtSett.getText()));
@@ -133,7 +134,7 @@ public class FxAppController extends Application {
 			}
 		}
 		
-		listeMedOvelser += treningsOkter.get(treningsOkter.size() - 1).getOvelser().get(treningsOkt.getOvelser().size() - 1).getOvelsesnavn() + " \n";
+		listeMedOvelser += treningsOkter.get(treningsOkter.size() - 1).getOvelser().get(treningsOkt.getOvelser().size() - 1).getOvelsesnavn() + ", ";
 		txtListeOvelser.setText(listeMedOvelser);
 		System.out.println("Ovelser lagret til okt");
 		System.out.println(treningsOkter.size());
@@ -220,7 +221,7 @@ public class FxAppController extends Application {
 		for (Ovelsesgruppe gruppe : ovelsesGrupper) {
 			if (txtSokGruppe.getText().equals(gruppe.getNavn())) {
 				for (Ovelse ovelse : gruppe.getOvelser()) {
-					listeOvelser += (ovelse.getOvelsesnavn() + " \n");
+					listeOvelser += (ovelse.getOvelsesnavn() + ", ");
 				}
 			}
 			

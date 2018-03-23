@@ -32,8 +32,8 @@ import prosjekt_del2.InsertIntoDatabase;
     	
     	
     	//Legg til apparatøvelse
-    	public static void addApparatØvelse(Connection connection, String ovelsesnavn, String antallKilo, String antallSett, String apparatNavn) throws SQLException{
-    		String queryStatement = "INSERT INTO apparatøvelse(øvelsesnavn, antallKilo, antallSett, apparatNavn) VALUES(?,?,?,?)";
+    	public static void addApparatOvelse(Connection connection, String ovelsesnavn, String antallKilo, String antallSett, String apparatNavn) throws SQLException{
+    		String queryStatement = "INSERT INTO apparatovelse(ovelsesnavn, antallKilo, antallSett, apparatNavn) VALUES(?,?,?,?)";
     		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
     		
     		prepStat.setString(1, ovelsesnavn);
@@ -41,25 +41,25 @@ import prosjekt_del2.InsertIntoDatabase;
     		prepStat.setString(3, antallSett);
     		prepStat.setString(4, apparatNavn);
     		prepStat.execute();
-    		System.out.println("Apparatøvelse lagt til ");
+    		System.out.println("ApparatOvelse lagt til ");
     	}
     	
     	
     	//Legg til friøvelse
-    	public static void addFriØvelse(Connection connection, String ovelsesnavn, String beskrivelse) throws SQLException{
-    		String queryStatement = "INSERT INTO friøvelse(øvelsesnavn, beskrivelse) VALUES(?,?)";
+    	public static void addFriOvelse(Connection connection, String ovelsesnavn, String beskrivelse) throws SQLException{
+    		String queryStatement = "INSERT INTO friovelse(ovelsesnavn, beskrivelse) VALUES(?,?)";
     		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
     		
     		prepStat.setString(1, ovelsesnavn);
     		prepStat.setString(2, beskrivelse);
     		prepStat.execute();
-    		System.out.println("Fri øvelse lagt til");
+    		System.out.println("Fri Ovelse lagt til");
     	}
     	
     	
     	//Legg til treningsøkt
-    	public static void addTreningsØkt(Connection connection, Date dato, Time time, int duration, int personligForm, int prestasjon, String notat ) throws SQLException{
-    		String preQueryStatement = "INSERT INTO treningsøkt(dato, tidspunkt, varighet, personligform, prestasjon, notat) VALUES (?,?,?,?,?,?)";
+    	public static void addTreningsOkt(Connection connection, Date dato, Time time, int duration, int personligForm, int prestasjon, String notat ) throws SQLException{
+    		String preQueryStatement = "INSERT INTO treningsokt(dato, tidspunkt, varighet, personligform, prestasjon, notat) VALUES (?,?,?,?,?,?)";
     		PreparedStatement prepStat = connection.prepareStatement(preQueryStatement);
     		
     		prepStat.setDate(1,dato);
@@ -70,47 +70,47 @@ import prosjekt_del2.InsertIntoDatabase;
     		prepStat.setString(6, notat);
     		
     		prepStat.execute();
-    		System.out.println("Treningsøkt lagt til");
+    		System.out.println("TreningsOkt lagt til");
     		
     	}
     	
     	
     	//Legg til øvelse i treningsøkt
-    	public static void addØvelseITreningsøkt(Connection connection, Date dato, Time tidspunkt, String øvelsesnavn) throws SQLException{
-    		String queryStatement = "INSERT INTO øvelseITreningsøkt(dato, tidspunkt, øvelsesnavn) VALUES (?,?,?)";
+    	public static void addOvelseITreningsOkt(Connection connection, Date dato, Time tidspunkt, String ovelsesnavn) throws SQLException{
+    		String queryStatement = "INSERT INTO ovelseITreningsokt(dato, tidspunkt, ovelsesnavn) VALUES (?,?,?)";
     		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
     		
     		prepStat.setDate(1, dato);
     		prepStat.setTime(2, tidspunkt);
-    		prepStat.setString(3, øvelsesnavn);
+    		prepStat.setString(3, ovelsesnavn);
     		
     		prepStat.execute();
-    		System.out.println("Øvelse lagt i treningsøkt");
+    		System.out.println("Ovelse lagt i treningsokt");
     	}
     	
     	
     	//Legg til øvelse i øvelsesgruppe
-    	public static void addØvelseIØvelsesgruppe(Connection connection, String øvelsesnavn, String øvelsesgruppe) throws SQLException{
-    		String queryStatement = "INSERT INTO øvelseIØvelsesgruppe(dato, tidspunkt, øvelsesnavn) VALUES (?,?,?)";
+    	public static void addOvelseIOvelsesgruppe(Connection connection, String ovelsesnavn, String ovelsesgruppe) throws SQLException{
+    		String queryStatement = "INSERT INTO ovelseIOvelsesgruppe(dato, tidspunkt, ovelsesnavn) VALUES (?,?,?)";
     		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
     		
-    		prepStat.setString(1, øvelsesnavn);
-    		prepStat.setString(2, øvelsesgruppe);
+    		prepStat.setString(1, ovelsesnavn);
+    		prepStat.setString(2, ovelsesgruppe);
     		
     		prepStat.execute();
-    		System.out.println("Øvelse lagt i Øvelsesgruppe");
+    		System.out.println("Ovelse lagt i ovelsesgruppe");
     	}
     	
     	///////////////////////ALLE ADDS LAGT TIL////////////////////////
     	
     	
     	//Hente de n siste Treningsøkter med all informasjon
-    	public static List<TreningsOkt> getNSisteTreningsøkter(Connection connection, int n) throws SQLException{
+    	public static List<TreningsOkt> getNSisteTreningsOkter(Connection connection, int n) throws SQLException{
     		
-    		List<TreningsOkt> treningsøkter = new ArrayList<TreningsOkt>();
+    		List<TreningsOkt> treningsOkter = new ArrayList<TreningsOkt>();
     		
     		//First find a list over the N last workouts
-    		String stmt = "select * from treningsøkt order by dato desc limit ?";
+    		String stmt = "select * from treningsokt order by dato desc limit ?";
     		PreparedStatement prepStat = connection.prepareStatement(stmt);
     		prepStat.setInt(1, n);
     		ResultSet rs = prepStat.executeQuery();
@@ -127,10 +127,10 @@ import prosjekt_del2.InsertIntoDatabase;
     			System.out.println(rs.getString("notat"));
     			TreningsOkt t = new TreningsOkt(rs.getDate("dato"), rs.getTime("tidspunkt"), 
     			rs.getInt("varighet"), rs.getInt("personligForm"), rs.getInt("prestasjon"), rs.getString("notat"));
-    			treningsøkter.add(t);
+    			treningsOkter.add(t);
     		}
     		
-    		return treningsøkter;
+    		return treningsOkter;
     	}
     	
     	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
@@ -138,7 +138,7 @@ import prosjekt_del2.InsertIntoDatabase;
     		//DatabaseOperations.addApparatØvelse(DBConnection.createDBConnection(), "hei", "90", "5", "hola");
 
     		Statement prepStatement = DBConnection.createDBConnection().createStatement();
-    		ResultSet rs = prepStatement.executeQuery("select count(*) from apparatøvelse where øvelsesnavn like 'hei'");
+    		ResultSet rs = prepStatement.executeQuery("select count(*) from apparatovelse where ovelsesnavn like 'hei'");
     		System.out.println(rs);
     		rs.next();
     		System.out.println(rs.getInt(1));
@@ -151,29 +151,29 @@ import prosjekt_del2.InsertIntoDatabase;
     	
     	////////Hente ut øvelse x mellom alle datoer 
     	
-    	public List<Ovelse> getInfoAboutØvelseInTimeInterval(Connection connection, String ovelsesnavn, Date startsDato, Date sluttdato) throws SQLException{
+    	public List<Ovelse> getInfoAboutOvelseInTimeInterval(Connection connection, String ovelsesnavn, Date startsDato, Date sluttdato) throws SQLException{
     		
     		//Sjekker først om det finnes noen ovelsesnavn i apparatøvelse. Hvis det gjør det så execute kode
     		Statement prepStatement = connection.createStatement();
     		
     		//Dette querystatementet er gjennomtestet, og det funker gull
-    		ResultSet rs = prepStatement.executeQuery("select count(*) from apparatøvelse where øvelsesnavn like" + ovelsesnavn);
+    		ResultSet rs = prepStatement.executeQuery("select count(*) from apparatovelse where ovelsesnavn like" + ovelsesnavn);
     		//Må ha rs.next() fordi den nullindekserer.
     		rs.next();
     		if (rs.getInt(1) > 0){
-    			ResultSet resultat = prepStatement.executeQuery("select * from øvelseITreningsøkt JOIN apparatøvelse on (øvelseITreningsøkt.øvelsesnavn = apparatøvelse.øvelsesnavn)");
+    			ResultSet resultat = prepStatement.executeQuery("select * from ovelseITreningsokt JOIN apparatovelse on (ovelseITreningsOkt.ovelsesnavn = apparatovelse.ovelsesnavn)");
     		}
     		
     		//Sjekker deretter for det samme i friøvelse
-    		rs = prepStatement.executeQuery("select count(*) from friøvelse where øvelsesnavn like" + ovelsesnavn);
+    		rs = prepStatement.executeQuery("select count(*) from friovelse where ovelsesnavn like" + ovelsesnavn);
     		rs.next();
     		if (rs.getInt(1) > 0){
     			
     		}
     		
     		
-    		String checkApparatØvelse = "SELECT øvelsesnavn(COUNT(1) AS BIT) FROM apparatøvelse WHERE (øvelsesnavn == ovelsesnavn)";
-    		String checkFriØvelse = "SELECT øvelsesnavn(COUNT(1) AS BIT) FROM friøvelse WHERE (øvelsesnavn == ovelsesnavn)";
+    		String checkApparatOvelse = "SELECT ovelsesnavn(COUNT(1) AS BIT) FROM apparatovelse WHERE (ovelsesnavn == ovelsesnavn)";
+    		String checkFriOvelse = "SELECT ovelsesnavn(COUNT(1) AS BIT) FROM friovelse WHERE (ovelsesnavn == ovelsesnavn)";
     		//String friØvelseQueryStatement = "select ovelsesnavn from friøvelse where  "startsDato" and "sluttDato"";
     		//String apparatØvelseQueryStatement = "select "
     		
