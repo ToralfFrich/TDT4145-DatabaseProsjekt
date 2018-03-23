@@ -298,5 +298,21 @@ public class FxAppController extends Application {
 		launch(args);
 	}
 	
+		/*while (rs.next() && i < n) {
+			i ++;
+			String dato = rs.getString(1);
+			String tidspunkt = rs.getString(2);
+			String varighet = rs.getString(3);
+			String personligform = rs.getString(4);
+			String prestasjon = rs.getString(5);
+			String notat = rs.getString(6);
+			System.out.println("Økt " + i +  "/n"
+					+ "Dato: " + dato +"\n"
+					+ "Tidspunkt: " + tidspunkt +"\n"
+					+ "Varighet: " + varighet +"\n"
+					+ "Personlig form: " + personligform +"\n"
+					+ "Prestasjon: " + prestasjon +"\n"
+					+ "Notat: " + notat +"\n\n");
+	
 */
 }

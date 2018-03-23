@@ -101,7 +101,6 @@ import prosjekt_del2.InsertIntoDatabase;
     		System.out.println("Øvelse lagt i Øvelsesgruppe");
     	}
     	
-    	
     	///////////////////////ALLE ADDS LAGT TIL////////////////////////
     	
     	
@@ -116,8 +115,16 @@ import prosjekt_del2.InsertIntoDatabase;
     		prepStat.setInt(1, n);
     		ResultSet rs = prepStat.executeQuery();
     		
+    		
+    		
     		//Legger inn de n siste treningsøkter inn i en liste med treningsøkter.
     		while(rs.next()) {
+    			System.out.println(rs.getDate("dato"));
+        		System.out.println(rs.getTime("tidspunkt"));
+    			System.out.println(rs.getInt("varighet"));
+    			System.out.println(rs.getInt("personligForm"));
+    			System.out.println(rs.getInt("prestasjon"));
+    			System.out.println(rs.getString("notat"));
     			TreningsOkt t = new TreningsOkt(rs.getDate("dato"), rs.getTime("tidspunkt"), 
     			rs.getInt("varighet"), rs.getInt("personligForm"), rs.getInt("prestasjon"), rs.getString("notat"));
     			treningsøkter.add(t);
@@ -125,50 +132,62 @@ import prosjekt_del2.InsertIntoDatabase;
     		
     		return treningsøkter;
     	}
+    	
+    	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+			//System.out.println(getNSisteTreningsøkter(DBConnection.createDBConnection(), 3));
+    		//DatabaseOperations.addApparatØvelse(DBConnection.createDBConnection(), "hei", "90", "5", "hola");
+
+    		Statement prepStatement = DBConnection.createDBConnection().createStatement();
+    		ResultSet rs = prepStatement.executeQuery("select count(*) from apparatøvelse where øvelsesnavn like 'hei'");
+    		System.out.println(rs);
+    		rs.next();
+    		System.out.println(rs.getInt(1));
+		}
 
     	
     	
     	
+    	///////////Hente ut siste N treningsøkter lagt til///////////////
     	
+    	////////Hente ut øvelse x mellom alle datoer 
     	
-    	
-    	
-    	
-    	
-    	public void printNTreningsokter(Connection conn, int n) { //skriver ut de n siste treningsøktene
-    		try{
-    			Statement stmt = conn.createStatement();
-    			String quary = 
-    			"SELECT * FROM "+db+".Treningsokt "+
-    			"ORDER BY Dato ASC";
-    			
-    			ResultSet rs = null;
-    			if(stmt.execute(quary)){
-    				rs = stmt.getResultSet();
-    			}
-    			int i = 0;
-    			while (rs.next() && i < n) {
-    				i ++;
-    				String dato = rs.getString(1);
-    				String tidspunkt = rs.getString(2);
-    				String varighet = rs.getString(3);
-    				String personligform = rs.getString(4);
-    				String prestasjon = rs.getString(5);
-    				String notat = rs.getString(6);
-    				System.out.println("Økt " + i +  "/n"
-    						+ "Dato: " + dato +"\n"
-    						+ "Tidspunkt: " + tidspunkt +"\n"
-    						+ "Varighet: " + varighet +"\n"
-    						+ "Personlig form: " + personligform +"\n"
-    						+ "Prestasjon: " + prestasjon +"\n"
-    						+ "Notat: " + notat +"\n\n");
-    			}
-    		} catch (SQLException ex) {
-    			System.out.println("SQLExcetion:" + ex.getMessage());
-    			ex.printStackTrace();
+    	public List<Ovelse> getInfoAboutØvelseInTimeInterval(Connection connection, String ovelsesnavn, Date startsDato, Date sluttdato) throws SQLException{
+    		
+    		//Sjekker først om det finnes noen ovelsesnavn i apparatøvelse. Hvis det gjør det så execute kode
+    		Statement prepStatement = connection.createStatement();
+    		
+    		//Dette querystatementet er gjennomtestet, og det funker gull
+    		ResultSet rs = prepStatement.executeQuery("select count(*) from apparatøvelse where øvelsesnavn like" + ovelsesnavn);
+    		//Må ha rs.next() fordi den nullindekserer.
+    		rs.next();
+    		if (rs.getInt(1) > 0){
+    			ResultSet resultat = prepStatement.executeQuery("select * from øvelseITreningsøkt JOIN apparatøvelse on (øvelseITreningsøkt.øvelsesnavn = apparatøvelse.øvelsesnavn)");
     		}
+    		
+    		//Sjekker deretter for det samme i friøvelse
+    		rs = prepStatement.executeQuery("select count(*) from friøvelse where øvelsesnavn like" + ovelsesnavn);
+    		rs.next();
+    		if (rs.getInt(1) > 0){
+    			
+    		}
+    		
+    		
+    		String checkApparatØvelse = "SELECT øvelsesnavn(COUNT(1) AS BIT) FROM apparatøvelse WHERE (øvelsesnavn == ovelsesnavn)";
+    		String checkFriØvelse = "SELECT øvelsesnavn(COUNT(1) AS BIT) FROM friøvelse WHERE (øvelsesnavn == ovelsesnavn)";
+    		//String friØvelseQueryStatement = "select ovelsesnavn from friøvelse where  "startsDato" and "sluttDato"";
+    		//String apparatØvelseQueryStatement = "select "
+    		
+			return null;
+    		
     	}
     	
+    	
+    	
+    	
+    	
+
+ /*
+
     	public void printResultatlogg(Connection conn, String ovelsesnavn, String startdato, String sluttdato) { //skriver ut resultatlogg for apparatovelser
     		try{
     			Statement stmt = conn.createStatement();
@@ -222,5 +241,5 @@ import prosjekt_del2.InsertIntoDatabase;
     			ex.printStackTrace();
     		}
     	}
-       
+       */
     }
