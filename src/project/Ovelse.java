@@ -1,6 +1,6 @@
 package project;
 
-public abstract class Ovelse {
+public class Ovelse {
 
 	private String ovelsesnavn;
 	
