@@ -47,7 +47,6 @@ import java.util.ArrayList;
     				return;
     			}
     		}
-    		System.out.println("Havna inni her");
     		queryStatement = "insert into ovelse (ovelsesnavn) VALUES (?)";
           	prepStat = connection.prepareStatement(queryStatement);
                 
@@ -281,7 +280,7 @@ import java.util.ArrayList;
     	
     	//KRAV 5///////////HVOR MANGE TRENINGSØKTER TOTALT/////////
     	
-    	public static int getTotalTreningsøkter(Connection conn) throws SQLException {
+    	public static int getTotalTreningsokter(Connection conn) throws SQLException {
     		String stmt  = "select count(dato) as total from treningsokt";
     		PreparedStatement pr = conn.prepareStatement(stmt);
     		ResultSet rs = pr.executeQuery();
@@ -362,7 +361,7 @@ import java.util.ArrayList;
     		
     	}
     	
-    	//HENTER UT OVELSER//////FERDIG
+    	//HENTER UT OVELSER SOM HAR BLITT GJORT//////FERDIG
     	
     	public static List<Ovelse> getOvelserSomHarBlittGjort(Connection connection) throws SQLException{
     		
@@ -391,6 +390,24 @@ import java.util.ArrayList;
     	
 			return ovelser;
     		
+    	}
+    	
+    	//HENTER UT OVELSER GENERELT///////FERDIG
+    	
+    	public static List<Ovelse> getOvelser(Connection connection) throws SQLException{
+    		List<Ovelse> ovelser = new ArrayList<>();
+    		
+    		//Henter ut alle ovelser
+    		String queryStatement = "select * from ovelse";
+    		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
+    		ResultSet rs = prepStat.executeQuery();
+    		
+    		while (rs.next()){
+    			Ovelse ovelse = new Ovelse(rs.getString("ovelsesnavn"));
+    			ovelser.add(ovelse);
+    		}
+    		
+    		return ovelser;
     	}
     	
     	
@@ -422,6 +439,8 @@ import java.util.ArrayList;
     		
     		DatabaseOperations.addOvelse(DBConnection.createDBConnection(), "testovelse2");
     		*/
+    		
+    		System.out.println(DatabaseOperations.getOvelser(DBConnection.createDBConnection()));
 		}	
     	
     }

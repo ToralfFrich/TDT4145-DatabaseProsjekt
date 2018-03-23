@@ -114,9 +114,9 @@ public class FxAppController extends Application {
 		System.out.println("Okt laget");
 	}
 	
-	public void leggTilOvelserIOkt() throws SQLException {
+	public void leggTilOvelserITreningsokt() throws SQLException, NumberFormatException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		// Bytt ut lista her
-		for (Ovelse ovelse : ovelser) {
+		for (Ovelse ovelse : DatabaseOperations.getOvelser(DBConnection.createDBConnection())) {
 			if (txtOvelseNavn.getText().equals(ovelse.getOvelsesnavn())) {
 				if (ovelse instanceof ApparatOvelse) {
 					System.out.println("Den skjonte at det var et Apparat, digg");
@@ -161,24 +161,22 @@ public class FxAppController extends Application {
 	// ----------------------------------------------------------
 	
 	
-	public void addApparatOvelse() throws SQLException {
+	public void addApparatOvelse() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		// Maa endre "apparater" til database.getApparater
-		for (Apparat apparat : apparater) {
+		for (Apparat apparat : DatabaseOperations.getApparater(DBConnection.createDBConnection())) {
 			//maa ha en metode for aa hente ut alle apparater
 			if (apparat.getNavn().equals(txtApparatTilOvelse.getText())) {
 				DatabaseOperations.addApparatOvelse(conn, txtApparatOvelse.getText(), 
 						txtKilo.getText(), txtSett.getText(), txtApparatTilOvelse.getText());
 			}
 		}
-		// Maa endre "ovelsesGrupper" til database.getOvelsesGrupper
-		/* Denne maa vi se mer paa, ettersom vi ikke har en ovelsesgruppe
-		for (Ovelsesgruppe gruppe : ovelsesGrupper) {
-			//samme som over
+		
+		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(DBConnection.createDBConnection())) {
 			if (gruppe.getNavn().equals(txtOvelsesGruppeApparat.getText())) {
-				gruppe.addToList(apparatOvelse);
+				DatabaseOperations.addOvelsesgruppe(DBConnection.createDBConnection(), gruppe.getNavn());
 			}
 		}
-		*/
+		
 		txtApparatOvelse.clear();
 		txtOvelsesGruppeApparat.clear();
 		txtApparatTilOvelse.clear();
