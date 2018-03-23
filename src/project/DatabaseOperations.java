@@ -225,7 +225,7 @@ import prosjekt_del2.InsertIntoDatabase;
     	}
     	
     	
-    	//KRAV 4////////////
+    	//KRAV 4////////////LAGE ØVELSESGRUPPER OG FINNE ØVELSER SOM ER I SAMME GRUPPE////////
     	
     	
     	///////////////////MAIN ////////////////
