@@ -1,5 +1,6 @@
-package prosjekt_del2;
+package project;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -85,23 +86,36 @@ public class FxAppController extends Application {
 	// TreningsOkt
 	// ----------------------------------------------------------
 	
+	public static java.sql.Date stringToDate(String date){
+		String[] deler = date.split("-");
+		Integer Ã¥r = Integer.parseInt(deler[0]) - 1900;
+		Integer mÃ¥ned = Integer.parseInt(deler[1]) - 1;
+		Integer dag = Integer.parseInt(deler[2]);
+		java.sql.Date dato = new java.sql.Date(Ã¥r, mÃ¥ned, dag);
+		return dato;
+	}
+
+	public static Time stringToTime(String tid){
+		String[] deler = tid.split(":");
+		Integer time = Integer.parseInt(deler[0]);
+		Integer minutt = Integer.parseInt(deler[1]);
+		Integer sekund = Integer.parseInt(deler[2]);
+		Time tiden = new Time(time, minutt, sekund);
+		return tiden;
+	}
+	
 	public void lagOkt() {
-		treningsOkt = new TreningsOkt(txtDato.getText(), txtTidspunkt.getText());
-		treningsOkt.setVarighet(Integer.parseInt(txtVarighet.getText()));
-		treningsOkt.setPersonligForm(Integer.parseInt(txtPersonligForm.getText()));
-		treningsOkt.setPrestasjon(Integer.parseInt(txtPrestasjon.getText()));
-		treningsOkt.setNotat(txtNotat.getText());
-		treningsOkter.add(treningsOkt);
-		System.out.println("Okt laget");
-		System.out.println(treningsOkter.size());
-		txtListeOvelser.clear();
+		DatabaseOperations.addTreningsÃ˜kt(DBConnection.createDBConnection(), stringToDate(txtDato.getText()), 
+				stringToTime(txtTidspunkt.getText()), Integer.parseInt(txtVarighet.getText()), 
+				Integer.parseInt(txtPersonligForm.getText()), Integer.parseInt(txtPrestasjon.getText()), txtNotat.getText());
+		System.out.println("Ã˜kt laget");
 	}
 	
 	public void leggTilOvelserIOkt() {
 		for (Ovelse ovelse : ovelser) {
 			if (txtOvelseNavn.getText().equals(ovelse.getOvelsesnavn())) {
 				if (ovelse instanceof ApparatOvelse) {
-					System.out.println("Den skjønte at det var et Apparat, digg");
+					System.out.println("Den skjï¿½nte at det var et Apparat, digg");
 					ApparatOvelse ovelseIOkt = new ApparatOvelse(ovelse.getOvelsesnavn());
 					ovelseIOkt.setAntallKilo(Integer.parseInt(txtKilo.getText()));
 					ovelseIOkt.setAntallSett(Integer.parseInt(txtSett.getText()));
@@ -187,10 +201,10 @@ public class FxAppController extends Application {
 	}
 	
 	// ----------------------------------------------------------
-	// Øvelsesgruppe
+	// ï¿½velsesgruppe
 	// ----------------------------------------------------------
 	
-	// Når fanen velges kjøres denne, legger inn i choicebox
+	// Nï¿½r fanen velges kjï¿½res denne, legger inn i choicebox
 	
 	public void opprettOvelsesGruppe() {
 		Ovelsesgruppe oGruppe = new Ovelsesgruppe(txtNavnGruppe.getText());
@@ -242,7 +256,7 @@ public class FxAppController extends Application {
 	}
 	
 	// -----------------------------------------------------------
-	// Øvelselogg
+	// ï¿½velselogg
 	// -----------------------------------------------------------
 	
 	public void sokOvelseLogg() throws ParseException {
@@ -279,8 +293,10 @@ public class FxAppController extends Application {
 	// -----------------------------------------------------------
 	
 	public static void main(String[] args) {
+		// DatabaseOperations data = new DatabaseOperations();
+        // data.connect();
 		launch(args);
 	}
 	
-
+*/
 }

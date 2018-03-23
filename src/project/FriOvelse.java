@@ -1,4 +1,4 @@
-package prosjekt_del2;
+package project;
 
 public class FriOvelse extends Ovelse{
 

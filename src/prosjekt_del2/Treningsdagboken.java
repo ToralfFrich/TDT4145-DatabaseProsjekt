@@ -32,10 +32,10 @@ public class Treningsdagboken {
 	private String notat;
 	private int luft;
 	private int tilskuere;
-	private String vÊrType;
+	private String varType;
 	private int temperatur;
 
-	//ÿvelse variable
+	//ï¿½velse variable
 	private String ovelseNavn;
 	private String beskrivelse;
 	private String katNavn;
@@ -60,7 +60,7 @@ public class Treningsdagboken {
 	
 
 
-	public Treningsdagbok() {
+	public Treningsdagboken() {
 		createConnection();
 	}
 
@@ -78,10 +78,10 @@ public class Treningsdagboken {
 		System.out.println("Hva heter treningen din?");
 		this.treningsNavn = scan.nextLine();
 
-		System.out.println("NÂr starter du din trening? Format: <YYYY-MM-DD HH:MM:SS>");
+		System.out.println("Nï¿½r starter du din trening? Format: <YYYY-MM-DD HH:MM:SS>");
 		this.startTid = scan.nextLine();
 
-		System.out.println("NÂr sluttet du din trening?");
+		System.out.println("Nï¿½r sluttet du din trening?");
 		this.sluttTid = scan.nextLine();
 
 		System.out.println("Trente du inne eller ute?");
@@ -92,10 +92,10 @@ public class Treningsdagboken {
 			this.plass = false;
 		}
 
-		System.out.println("PÂ en skala fra 1-10, hvordan var din form under treningen?");
+		System.out.println("Pï¿½ en skala fra 1-10, hvordan var din form under treningen?");
 		this.form = Integer.parseInt(scan.nextLine());
 
-		System.out.println("PÂ en skala fra 1-10, hvordan var din prestasjon under treningen?");
+		System.out.println("Pï¿½ en skala fra 1-10, hvordan var din prestasjon under treningen?");
 		this.prestasjon = Integer.parseInt(scan.nextLine());
 
 		System.out.println("Skriv en kort notat for treningen");
@@ -121,7 +121,7 @@ public class Treningsdagboken {
 
 		if (plass) {
 
-			System.out.println("Hvordan var luften pÂ en skala fra 1-10?");
+			System.out.println("Hvordan var luften pï¿½ en skala fra 1-10?");
 			this.luft = Integer.parseInt(scan.nextLine());
 
 			System.out.println("Hvor mange tilskuere hadde du?");
@@ -137,14 +137,14 @@ public class Treningsdagboken {
 			}
 		} else {
 
-			System.out.println("Hvordan var vÊret?");
-			this.vÊrType = scan.nextLine();
+			System.out.println("Hvordan var vÃ¦ret?");
+			this.vÃ¦rType = scan.nextLine();
 
 			System.out.println("Hva var temperaturen?");
 			this.temperatur = Integer.parseInt(scan.nextLine());			
 
 			sql = "INSERT INTO magnukun_dagbok.Trening_Ute (Temp, Vaertype, Form, Prestasjon, Notat, T_ID)"
-					+ "values('" + temperatur + "', '" + vÊrType + "', '" + form + "', '" + prestasjon +
+					+ "values('" + temperatur + "', '" + vï¿½rType + "', '" + form + "', '" + prestasjon +
 					"', '" + notat +"', '" + T_ID + "  ');";
 			try {
 				treningStmt.executeUpdate(sql);
@@ -157,13 +157,13 @@ public class Treningsdagboken {
 		}
 		treningAdded = true;
 
-		System.out.println("Vil du legge til øvelse? ja/nei");
+		System.out.println("Vil du legge til ï¿½velse? ja/nei");
 
 		String janei = scan.nextLine();
 
 		while(janei.equals("ja")){
 			insertOvelse();
-			System.out.println("\nVil du legge til øvelse? ja/nei\n");
+			System.out.println("\nVil du legge til ï¿½velse? ja/nei\n");
 			janei = scan.nextLine();
 
 		}
@@ -177,13 +177,13 @@ public class Treningsdagboken {
 			Scanner scan = new Scanner(System.in);
 			String neste;
 			try {
-				System.out.println("Hva er navnet pÂ ¯velsen?");
+				System.out.println("Hva er navnet pï¿½ ï¿½velsen?");
 				this.ovelseNavn = scan.nextLine();
 
-				System.out.println("Beskriv ¯velsen:");
+				System.out.println("Beskriv ï¿½velsen:");
 				this.beskrivelse = scan.nextLine();
 
-				System.out.println("Hvilken kategori tilh¯rer ¯velsen?");
+				System.out.println("Hvilken kategori tilhï¿½rer ï¿½velsen?");
 				this.katNavn = scan.nextLine();
 
 				try {
@@ -191,14 +191,14 @@ public class Treningsdagboken {
 					sql = "Insert INTO magnukun_dagbok.Ovelse (Navn, Beskrivelse, katNavn ) "
 							+ "values ('" + this.ovelseNavn + "', '" + this.beskrivelse + "', '" + this.katNavn + "');";
 					ovelseStmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
-					System.out.println("ÿvelse lagt til!");
+					System.out.println("ï¿½velse lagt til!");
 					String quary = "SELECT Navn from Kategori;";
 					Statement stmt = myConn.createStatement();
 					ResultSet rst = null;
 					if (stmt.execute(quary)) {
 						rst = stmt.getResultSet();
 					}
-					System.out.println("Tilhører kategorien din noen av disse kategoriene?/n Skriv inn navn på kategori i liste. Skriv 'nei' hvis ikke.");
+					System.out.println("Tilhï¿½rer kategorien din noen av disse kategoriene?/n Skriv inn navn pï¿½ kategori i liste. Skriv 'nei' hvis ikke.");
 					while (rst.next()) {
 						String kat = rst.getString(1);
 						System.out.println(kat + "\n");
@@ -226,13 +226,13 @@ public class Treningsdagboken {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("Du må legge til treningsøkt før du legger til øvelse!\n");
+			System.out.println("Du mï¿½ legge til treningsï¿½kt fï¿½r du legger til ï¿½velse!\n");
 		}
 	}
 
 	public void insertStyrkeKondisjon() {
 		Scanner scan = new Scanner(System.in);
-		System.out.println("Var øvelsen din styrke eller kondisjon?");
+		System.out.println("Var ï¿½velsen din styrke eller kondisjon?");
 		if (scan.nextLine().equals("styrke")) {
 
 			System.out.println("Hva var belastningen?");
@@ -266,10 +266,10 @@ public class Treningsdagboken {
 			System.out.println("Hvor mange sett?");
 			this.sett = Integer.parseInt(scan.next());
 			
-			System.out.println("Hvor langt varte øvelsen (i antall hele kilometer)?");
+			System.out.println("Hvor langt varte ï¿½velsen (i antall hele kilometer)?");
 			this.lengde = Integer.parseInt(scan.next());
 			
-			System.out.println("Hvor lenge varte øvelsen(<HH:MM:SS>)?");
+			System.out.println("Hvor lenge varte ï¿½velsen(<HH:MM:SS>)?");
 			this.kondisVarighet = scan.next();
 			
 
@@ -307,7 +307,7 @@ public class Treningsdagboken {
 			System.out.println("Skriv inn breddegraden:");
 			this.breddegrad = Double.parseDouble(scan.nextLine());
 
-			System.out.println("Skriv inn h¯yden over havet:");
+			System.out.println("Skriv inn hï¿½yden over havet:");
 			this.moh = Double.parseDouble(scan.nextLine());
 
 			try {
@@ -324,7 +324,7 @@ public class Treningsdagboken {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("Du må legge til en treningsøkt før du kan legge til pulsdata!\n");
+			System.out.println("Du mï¿½ legge til en treningsï¿½kt fï¿½r du kan legge til pulsdata!\n");
 		}
 	}
 
@@ -356,7 +356,7 @@ public class Treningsdagboken {
 
 	public void sporringBesteTrening(){
 
-		System.out.println("Skrive ut beste trening:\n\nVil du se på bste trening inne eller ute?");
+		System.out.println("Skrive ut beste trening:\n\nVil du se pï¿½ bste trening inne eller ute?");
 		
 		Scanner scan = new Scanner(System.in);
 
@@ -462,7 +462,7 @@ public class Treningsdagboken {
 			System.out.println("Totalt antall minutter: " + res2.getString(1));
 
 			res3.next();
-			System.out.println("Totalt antall økter: " + res3.getString(1));
+			System.out.println("Totalt antall ï¿½kter: " + res3.getString(1));
 
 		} catch (SQLException ex) {
 			System.out.println("SQLExcetion:" + ex.getMessage());
@@ -524,11 +524,11 @@ public class Treningsdagboken {
 	}
 
 	public void startMeny() {
-		System.out.println("\nHer får du fire valg:\n"
+		System.out.println("\nHer fï¿½r du fire valg:\n"
 				+ "1. Legg til trening\n"
 				+ "2. Sjekk beste trening for denne uken\n"
-				+ "3. Statistikk for forrige måned\n"
-				+ "4. Notater fra siste måned\n"
+				+ "3. Statistikk for forrige mï¿½ned\n"
+				+ "4. Notater fra siste mï¿½ned\n"
 				+ "5. Legg til kategori\n"
 				+ "6. Avslutt program\n\n"
 				
@@ -553,8 +553,8 @@ public class Treningsdagboken {
 		while (tall != 6) {
 
 			if (tall == 1) {
-				System.out.println("1. Legg til treningsøkt\n"
-						+ "2. Legg til øvelse\n"
+				System.out.println("1. Legg til treningsï¿½kt\n"
+						+ "2. Legg til ï¿½velse\n"
 						+ "3. Legg til puls");
 
 				int choice = Integer.parseInt(scanner.next());

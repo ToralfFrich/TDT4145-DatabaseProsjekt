@@ -1,4 +1,4 @@
-package prosjekt_del2;
+package project;
 
 public class ApparatOvelse extends Ovelse{
 
@@ -6,8 +6,11 @@ public class ApparatOvelse extends Ovelse{
 	private int antallSett;
 	private Apparat apparat;
 	
-	public ApparatOvelse(String ovelsesnavn) {
+	public ApparatOvelse(String ovelsesnavn, int antallKilo, int antallSett, Apparat apparat) {
 		super(ovelsesnavn);
+		this.antallKilo = antallKilo;
+		this.antallSett = antallSett;
+		this.apparat = apparat;
 	}
 
 	public int getAntallKilo() {
@@ -35,8 +38,4 @@ public class ApparatOvelse extends Ovelse{
 	}
 	
 	
-
-	
-	
-
 }

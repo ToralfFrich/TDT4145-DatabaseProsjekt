@@ -22,8 +22,13 @@ package prosjekt_del2;
             }
         }
         
+        public Connection getConnection() {
+        	return conn;
+        }
+        
         public static void main(String[] args) {
             DatabaseOperations data = new DatabaseOperations();
             data.connect();
         }
+        
     }

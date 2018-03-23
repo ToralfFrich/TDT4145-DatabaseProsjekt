@@ -1,4 +1,4 @@
-package Databaser;
+package prosjekt_del2;
 
 import java.util.Arrays;
 import java.util.Date;

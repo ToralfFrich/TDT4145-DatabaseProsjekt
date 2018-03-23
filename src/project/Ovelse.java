@@ -1,4 +1,4 @@
-package prosjekt_del2;
+package project;
 
 public abstract class Ovelse {
 
@@ -12,4 +12,9 @@ public abstract class Ovelse {
 		return ovelsesnavn;
 	}
 	
+	public void setOvelsesnavn(String ovelsesnavn) {
+		this.ovelsesnavn = ovelsesnavn;
+	}
+	
+
 }
