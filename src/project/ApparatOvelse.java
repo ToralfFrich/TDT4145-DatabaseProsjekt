@@ -12,6 +12,10 @@ public class ApparatOvelse extends Ovelse{
 		this.antallSett = antallSett;
 		this.apparat = apparat;
 	}
+	
+	public ApparatOvelse(String ovelsesnavn) {
+		super(ovelsesnavn);
+	}
 
 	public int getAntallKilo() {
 		return antallKilo;
