@@ -262,8 +262,78 @@ import prosjekt_del2.InsertIntoDatabase;
     	}
     	
     	
+    	///////////ANDRE GET METODER/////////////
     	
+    	//Henter ut apparater////FERDIG
+    	public static List<Apparat> getApparater(Connection connection) throws SQLException{
+    		
+    		//Oppretter list med apparater
+    		List<Apparat> apparater = new ArrayList<>();
+    		
+    		//Henter ut apparater
+    		String queryStatement = "select * from apparat";
+    		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
+    		ResultSet rs = prepStat.executeQuery();
+    		
+    		//Resultset starter på index 0, vi må finne neste
+    		while(rs.next()){
+    			Apparat apparat = new Apparat(rs.getString(1), rs.getString(2));
+    			apparater.add(apparat);
+    		}
+    		
+			return apparater;
+    		
+    	}
     	
+
+    	//Henter ut treningsøkter////FERDIG
+    	public static List<TreningsOkt> getTreningsøkter(Connection connection) throws SQLException{
+    		
+    		List<TreningsOkt> treningsOkter = new ArrayList<TreningsOkt>();
+    		
+    		String stmt = "select * from treningsokt";
+    		PreparedStatement prepStat = connection.prepareStatement(stmt);
+    		ResultSet rs = prepStat.executeQuery();
+    		
+    		while(rs.next()) {
+    			TreningsOkt t = new TreningsOkt(rs.getDate("dato"), rs.getTime("tidspunkt"), 
+    			rs.getInt("varighet"), rs.getInt("personligForm"), rs.getInt("prestasjon"), rs.getString("notat"));
+    			treningsOkter.add(t);
+    		}
+    		
+    		return treningsOkter;
+    	}
+    	
+    
+    	//HENTER UT ØVELSESGRUPPER/////WORK IN PROGRESS
+    	public static List<Ovelsesgruppe> getOvelsesgrupper(Connection connection) throws SQLException{
+    		
+    		//Oppretter list med OvelsesGrupper
+    		List<Ovelsesgruppe> ovelsesgrupper = new ArrayList<>();
+    		
+    		//Henter ut OvelsesGrupper fra ovelsesgruppe-tabell
+    		String queryStatement = "select * from ovelsesgruppe";
+    		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
+    		ResultSet rs = prepStat.executeQuery();
+    		
+    		while (rs.next()){
+    			Ovelsesgruppe ovelsesgruppe1 = new Ovelsesgruppe(rs.getString("ovelsesgruppenavn"));
+    			ovelsesgrupper.add(ovelsesgruppe1);
+    		}
+    		
+    		//Henter ut ovelsesgrupper fra ovelseiovelsesgruppe
+    		queryStatement = "select ovelsesgruppe from ovelseIOvelsesgruppe";
+    		prepStat = connection.prepareStatement(queryStatement);
+    		rs = prepStat.executeQuery();
+    		
+    		while (rs.next()){
+    			Ovelsesgruppe ovelsesgruppe2 = new Ovelsesgruppe(rs.getString("ovelsesgruppe"));
+    			ovelsesgrupper.add(ovelsesgruppe2);
+    		}
+    		
+			return ovelsesgrupper;
+    		
+    	}
     	
     	
     	///////////////////MAIN ////////////////
@@ -284,9 +354,39 @@ import prosjekt_del2.InsertIntoDatabase;
     		
     		DatabaseOperations.addOvelseIOvelsesgruppe(DBConnection.createDBConnection(), "Test", "JADA");
     		System.out.println(DatabaseOperations.getOvelserIOvelsesgrupper(DBConnection.createDBConnection(), "JADA"));
+    		*/
     		
     		System.out.println(DatabaseOperations.getTotalTreningsøkter(DBConnection.createDBConnection()));
-    		*/
-		}
+		}	
     	
     }
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+
+
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    
