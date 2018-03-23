@@ -241,6 +241,12 @@
                                              <children>
                                                 <TextField fx:id="txtNSisteOkter" layoutX="31.0" layoutY="44.0" prefHeight="25.0" prefWidth="195.0" promptText="Velg n antall siste økter" />
                                                 <Button fx:id="btSokNSiste" layoutX="31.0" layoutY="80.0" mnemonicParsing="false" onAction="#initTable" prefHeight="25.0" prefWidth="79.0" text="Søk" />
+                                                <Text layoutX="568.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Totalt antall treningsøkter :" wrappingWidth="209.99951171875">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                </Text>
+                                                <TextField fx:id="txtTotAntallOkter" layoutX="778.0" layoutY="45.0" prefHeight="25.0" prefWidth="48.0" />
                                              </children>
                                           </Pane>
                                        </children>

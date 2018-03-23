@@ -313,7 +313,7 @@ import java.util.ArrayList;
     	
 
     	//Henter ut treningsøkter////FERDIG
-    	public static List<TreningsOkt> getTreningsøkter(Connection connection) throws SQLException{
+    	public static List<TreningsOkt> getTreningsOkter(Connection connection) throws SQLException{
     		
     		List<TreningsOkt> treningsOkter = new ArrayList<TreningsOkt>();
     		

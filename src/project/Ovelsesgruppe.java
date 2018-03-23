@@ -22,7 +22,7 @@ public class Ovelsesgruppe {
 	
 	public void addOvelseIOvelsesgruppe(String ovelsesstring){
 		Ovelse ovelse = new Ovelse(ovelsesstring);
-		this.ovelser.add();
+		this.ovelser.add(ovelse);
 	}
 
 

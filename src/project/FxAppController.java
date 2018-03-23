@@ -40,7 +40,7 @@ public class FxAppController extends Application {
 			txtNotat, txtKilo, txtSett, txtListeOvelser, txtApparatOvelse, txtFriOvelse, txtApparat, 
 			txtBeskrivelse, txtOvelseGruppe, txtNSisteOkter, txtOvelserGruppe, txtNavnGruppe, 
 			txtFriBeskrivelse, txtApparatValg, txtVelgOvelse, txtOvelseNavn, txtOvelsesGruppeApparat, txtApparatTilOvelse,
-			txtOvelsesGruppeFri, txtSokGruppe;
+			txtOvelsesGruppeFri, txtSokGruppe,txtTotAntallOkter;
 	@FXML
 	ChoiceBox<Ovelse> cboxOvelser, cboxOvelseVelger;
 	@FXML
@@ -124,7 +124,7 @@ public class FxAppController extends Application {
 					ovelseIOkt.setAntallKilo(Integer.parseInt(txtKilo.getText()));
 					ovelseIOkt.setAntallSett(Integer.parseInt(txtSett.getText()));
 					// Bytt ut lista her
-					for (Apparat apparat : apparater) {
+					for (Apparat apparat : DatabaseOperations.getApparater(conn)) {
 						if (apparat.getNavn().equals(txtApparatValg.getText())) {
 							ovelseIOkt.setApparat(apparat);
 						}
@@ -161,43 +161,42 @@ public class FxAppController extends Application {
 	// ----------------------------------------------------------
 	
 	
-	public void addApparatOvelse() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+	public void addApparatOvelse() throws SQLException {
 		// Maa endre "apparater" til database.getApparater
-		for (Apparat apparat : DatabaseOperations.getApparater(DBConnection.createDBConnection())) {
+		for (Apparat apparat : DatabaseOperations.getApparater(conn)) {
 			//maa ha en metode for aa hente ut alle apparater
 			if (apparat.getNavn().equals(txtApparatTilOvelse.getText())) {
 				DatabaseOperations.addApparatOvelse(conn, txtApparatOvelse.getText(), 
 						txtKilo.getText(), txtSett.getText(), txtApparatTilOvelse.getText());
 			}
 		}
-		
-		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(DBConnection.createDBConnection())) {
+		// Maa endre "ovelsesGrupper" til database.getOvelsesGrupper
+
+		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(conn)) {
+			//samme som over
 			if (gruppe.getNavn().equals(txtOvelsesGruppeApparat.getText())) {
-				DatabaseOperations.addOvelsesgruppe(DBConnection.createDBConnection(), gruppe.getNavn());
+				DatabaseOperations.addOvelseIOvelsesgruppe(conn, txtApparatOvelse.getText(), gruppe.getNavn());
 			}
 		}
-		
+		// add i db
+		DatabaseOperations.addOvelse(conn, txtApparatTilOvelse.getText());
 		txtApparatOvelse.clear();
 		txtOvelsesGruppeApparat.clear();
 		txtApparatTilOvelse.clear();
 		System.out.println("Apparatovelse lagt til");
 	}
 	
-	public void addFriOvelse() {
+	public void addFriOvelse() throws SQLException {
 		FriOvelse friOvelse = new FriOvelse(txtFriOvelse.getText(), txtFriBeskrivelse.getText());
 		// Maa hente fra DB en liste med ovelser i ovelsesgruppe som stemmer mtp navnet skrevet inn
-		/*
-		for (Ovelsesgruppe gruppe : ovelsesGrupper) {
-			if (gruppe.getNavn().equals(txtFriOvelse.getText())) {
-				gruppe.addToList(friOvelse);
-			}
-		}
-		for (Ovelsesgruppe gruppe : ovelsesGrupper) {
+
+		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(conn)) {
 			if (gruppe.getNavn().equals(txtOvelsesGruppeFri.getText())) {
-				gruppe.addToList(friOvelse);
+				DatabaseOperations.addOvelseIOvelsesgruppe(conn, friOvelse.getOvelsesnavn(), gruppe.getNavn());
 			}
 		}
-		*/
+		// add i db
+		DatabaseOperations.addOvelse(conn, txtFriOvelse.getText());
 		txtOvelsesGruppeFri.clear();
 		txtFriOvelse.clear();
 		txtFriBeskrivelse.clear();
@@ -223,19 +222,19 @@ public class FxAppController extends Application {
 	// Siden vi har valgt � ikke bruke en table i database for OvelsesGruppe saa maa opprettOvelsesGruppe utgaa
 	// Dette er egentlig et krav, men da gjoeres det slik at hver gang du lager et apparat saa legger man til en ovelsesgruppe,
 	// som String da som lagres i databasen. 
-	public void opprettOvelsesGruppe() {
+	public void opprettOvelsesGruppe() throws SQLException {
 		Ovelsesgruppe oGruppe = new Ovelsesgruppe(txtNavnGruppe.getText());
-		ovelsesGrupper.add(oGruppe);
+		DatabaseOperations.addOvelsesgruppe(conn, oGruppe.getNavn());
 		txtNavnGruppe.clear();
 		System.out.println("Gruppe laget");
 		
 	}
 	
-	public void sokIOvelsesGruppe() {
+	public void sokIOvelsesGruppe() throws SQLException {
 		txtOvelseGruppe.clear();
 		String listeOvelser = "";
 		// Her m� man legge inn ovelserIOvelsesgrupper, og sjekke feltet for ovelsesgruppe om det stemmer med det som er skrevet inn
-		for (Ovelsesgruppe gruppe : ovelsesGrupper) {
+		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(conn)) {
 			if (txtSokGruppe.getText().equals(gruppe.getNavn())) {
 				for (Ovelse ovelse : gruppe.getOvelser()) {
 					listeOvelser += (ovelse.getOvelsesnavn() + ", ");
@@ -260,6 +259,7 @@ public class FxAppController extends Application {
 		tblcForm.setCellValueFactory(new PropertyValueFactory<TreningsOkt, Integer>("personligForm"));
 		tblcPrestasjon.setCellValueFactory(new PropertyValueFactory<TreningsOkt, Integer>("prestasjon"));
 		
+		txtTotAntallOkter.setText(String.valueOf(DatabaseOperations.getTotalTreningsOkter(conn)));
 		tblvOkter.setItems(getOkter(antall));
 	}
 	
@@ -277,7 +277,7 @@ public class FxAppController extends Application {
 	// �velselogg
 	// -----------------------------------------------------------
 	
-	public void sokOvelseLogg() throws ParseException {
+	public void sokOvelseLogg() throws ParseException, SQLException {
 		if (!loggObs.isEmpty()) {
 			loggObs.clear();
 		}
@@ -291,8 +291,8 @@ public class FxAppController extends Application {
 		tblcSettLogg.setCellValueFactory(new PropertyValueFactory<Ovelse, Integer>("antallSett"));
 		tblcBeskrivelseLogg.setCellValueFactory(new PropertyValueFactory<Ovelse, String>("beskrivelse"));
 		
-		for (TreningsOkt okt : treningsOkter) {
-			dato = format.parse(okt.getDato());
+		for (TreningsOkt okt : DatabaseOperations.getTreningsOkter(conn)) {
+			dato = okt.getDato();
 			if ((dato.compareTo(fraDato) > 0 && dato.compareTo(tilDato) < 0) 
 					|| dato.compareTo(fraDato) == 0 || dato.compareTo(tilDato) == 0) {
 				for (Ovelse ovelse : okt.getOvelser()) {
