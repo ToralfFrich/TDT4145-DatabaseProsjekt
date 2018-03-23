@@ -36,6 +36,35 @@ import prosjekt_del2.InsertIntoDatabase;
     	
     	
     	
+    	//Legg til ovelse
+    	public static void addOvelse(Connection connection, String ovelsesnavn) throws SQLException {
+    		
+    		List<Ovelse> ovelser = new ArrayList<>();
+    		
+    		String queryStatement = "select * from ovelse";
+    		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
+    		
+    		ResultSet rs = prepStat.executeQuery();
+    		
+    		//Sjekker om ovelse allerede finnes i ovelse-db
+    		while(rs.next()){
+    			Ovelse ovelse = new Ovelse(rs.getString("ovelsesnavn"));
+    			if (ovelser.contains(ovelse)){
+    				System.out.println("Denne øvelsen finnes allerede i databasen.");
+    				return;
+    			}
+    		}
+    		System.out.println("Havna inni her");
+    		queryStatement = "insert into ovelse (ovelsesnavn) VALUES (?)";
+          	prepStat = connection.prepareStatement(queryStatement);
+                
+           	prepStat.setString(1, ovelsesnavn);
+                
+            prepStat.executeUpdate();
+            System.out.println("ovelse lagt til");
+    		
+        }
+    	
     	
     	//Legg til apparatøvelse
     	public static void addApparatOvelse(Connection connection, String ovelsesnavn, 
@@ -51,6 +80,8 @@ import prosjekt_del2.InsertIntoDatabase;
     		prepStat.execute();
     		System.out.println("ApparatOvelse lagt til ");
     		
+    		DatabaseOperations.addOvelse(connection, ovelsesnavn);
+    		
     	}
     	
     	
@@ -65,6 +96,8 @@ import prosjekt_del2.InsertIntoDatabase;
     		prepStat.setString(2, beskrivelse);
     		prepStat.execute();
     		System.out.println("Fri Ovelse lagt til");
+    		
+    		DatabaseOperations.addOvelse(connection, ovelsesnavn);
     		
     	}
     	
@@ -123,7 +156,7 @@ import prosjekt_del2.InsertIntoDatabase;
     	
     	
     	//Legg til ovelsesgruppe
-    	public void addOvelsegruppe(Connection connection, String Ovelsesgruppenavn) throws SQLException {
+    	public static void addOvelsesgruppe(Connection connection, String Ovelsesgruppenavn) throws SQLException {
             String queryStatement = "insert into ovelsesgruppe (ovelsesgruppenavn) VALUES (?)";
             PreparedStatement prepStat = connection.prepareStatement(queryStatement);
             
@@ -131,9 +164,10 @@ import prosjekt_del2.InsertIntoDatabase;
             
             prepStat.executeUpdate();
             System.out.println("Ovelsesgruppe lagt til");
-        }
+    	}
     	
-
+    	
+    	
 
     	//KRAV 2//////Hente de n siste Treningsøkter med all informasjon/////////
     	
@@ -305,7 +339,7 @@ import prosjekt_del2.InsertIntoDatabase;
     	}
     	
     
-    	//HENTER UT ØVELSESGRUPPER/////WORK IN PROGRESS
+    	//HENTER UT ØVELSESGRUPPER/////FERDIG
     	public static List<Ovelsesgruppe> getOvelsesgrupper(Connection connection) throws SQLException{
     		
     		//Oppretter list med OvelsesGrupper
@@ -335,6 +369,37 @@ import prosjekt_del2.InsertIntoDatabase;
     		
     	}
     	
+    	//HENTER UT OVELSER//////FERDIG
+    	
+    	public static List<Ovelse> getOvelserSomHarBlittGjort(Connection connection) throws SQLException{
+    		
+    		List<Ovelse> ovelser = new ArrayList<>();
+    		
+    		//Henter ut ovelse fra apparatovelse
+    		String queryStatement = "select * from apparatovelse";
+    		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
+    		ResultSet rs = prepStat.executeQuery();
+    		
+    		while (rs.next()){
+    			ApparatOvelse apparatovelse = new ApparatOvelse(rs.getString("ovelsesnavn"), rs.getInt("antallKilo"), 
+    					rs.getInt("antallSett"), new Apparat(rs.getString("apparatNavn")));
+    			ovelser.add(apparatovelse);
+    		}
+    		
+    		//Henter ut ovelser fra friovelse
+    		queryStatement = "select * from friovelse";
+    		prepStat = connection.prepareStatement(queryStatement);
+    		rs = prepStat.executeQuery();
+    		
+    		while (rs.next()){
+    			FriOvelse friOvelse = new FriOvelse(rs.getString("ovelsesnavn"), rs.getString("beskrivelse"));
+    			ovelser.add(friOvelse);
+    		}
+    	
+			return ovelser;
+    		
+    	}
+    	
     	
     	///////////////////MAIN ////////////////
     	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
@@ -354,9 +419,15 @@ import prosjekt_del2.InsertIntoDatabase;
     		
     		DatabaseOperations.addOvelseIOvelsesgruppe(DBConnection.createDBConnection(), "Test", "JADA");
     		System.out.println(DatabaseOperations.getOvelserIOvelsesgrupper(DBConnection.createDBConnection(), "JADA"));
-    		*/
     		
     		System.out.println(DatabaseOperations.getTotalTreningsøkter(DBConnection.createDBConnection()));
+    		
+    		DatabaseOperations.addOvelsesgruppe(DBConnection.createDBConnection(), "Test testesen");
+    		System.out.println(DatabaseOperations.getOvelsesgrupper(DBConnection.createDBConnection()));
+    		
+    		System.out.println(DatabaseOperations.getOvelser(DBConnection.createDBConnection()));
+    		*/
+    		DatabaseOperations.addOvelse(DBConnection.createDBConnection(), "testøvelse");
 		}	
     	
     }
