@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.FxAppController">
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="prosjekt_del2.FxAppController">
    <children>
       <AnchorPane prefHeight="700.0" prefWidth="900.0">
          <children>
@@ -57,7 +57,7 @@
                                                       <Font size="15.0" />
                                                    </font>
                                                 </Text>
-                                                <Text layoutX="237.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tidspunkt (TT:MM:SS)" wrappingWidth="165.3339922428131">
+                                                <Text layoutX="237.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tidspunkt (TT:MM)" wrappingWidth="165.3339922428131">
                                                    <font>
                                                       <Font size="15.0" />
                                                    </font>
@@ -90,7 +90,7 @@
                                                       <Font size="15.0" />
                                                    </font>
                                                 </Text>
-                                                <Button fx:id="btAdd" layoutX="576.0" layoutY="294.0" mnemonicParsing="false" onAction="#leggTilOvelserITreningsokt" text="Legg til" />
+                                                <Button fx:id="btAdd" layoutX="576.0" layoutY="294.0" mnemonicParsing="false" onAction="#leggTilOvelserIOkt" text="Legg til" />
                                                 <TextField fx:id="txtListeOvelser" alignment="TOP_LEFT" layoutX="576.0" layoutY="355.0" prefHeight="152.0" prefWidth="173.0" />
                                                 <Text layoutX="35.0" layoutY="353.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Notat" wrappingWidth="165.3339922428131">
                                                    <font>
@@ -200,7 +200,7 @@
                                                    </font>
                                                 </Text>
                                                 <TextField fx:id="txtOvelseGruppe" alignment="TOP_LEFT" layoutX="514.0" layoutY="197.0" prefHeight="282.0" prefWidth="257.0" />
-                                                <Button fx:id="btSokGrupper" layoutX="779.0" layoutY="99.0" mnemonicParsing="false" onAction="#sokIOvelsesGruppe" prefHeight="25.0" prefWidth="79.0" text="Søk" />
+                                                <Button fx:id="btSokGrupper" layoutX="779.0" layoutY="99.0" mnemonicParsing="false" onAction="#sokIGruppe" prefHeight="25.0" prefWidth="79.0" text="Søk" />
                                                 <Text layoutX="56.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Opprett øvelsesgruppe" wrappingWidth="224.8339922428131">
                                                    <font>
                                                       <Font size="20.0" />
