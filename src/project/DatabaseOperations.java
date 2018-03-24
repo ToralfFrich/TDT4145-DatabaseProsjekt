@@ -3,6 +3,7 @@ package project;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Date;
     
     public class DatabaseOperations {
         
@@ -96,7 +97,7 @@ import java.util.ArrayList;
     	
     	
     	//Legg til treningsøkt
-    	public static void addTreningsOkt(Connection connection, Date dato, Time time, 
+    	public static void addTreningsOkt(Connection connection, java.sql.Date dato, Time time, 
     			int duration, int personligForm, int prestasjon, String notat ) throws SQLException{
     		String preQueryStatement = "INSERT INTO treningsokt(dato, tidspunkt, varighet, "
     				+ "personligform, prestasjon, notat) VALUES (?,?,?,?,?,?)";
@@ -117,7 +118,7 @@ import java.util.ArrayList;
     	
     	
     	//Legg til øvelse i treningsøkt
-    	public static void addOvelseITreningsOkt(Connection connection, Date dato, 
+    	public static void addOvelseITreningsOkt(Connection connection, java.sql.Date dato, 
     			Time tidspunkt, String ovelsesnavn) throws SQLException{
     		String queryStatement = "INSERT INTO ovelseITreningsokt(dato, tidspunkt, ovelsesnavn) VALUES (?,?,?)";
     		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
@@ -190,9 +191,10 @@ import java.util.ArrayList;
     	//KRAV 3///////////////Hente ut øvelse x mellom to datoer y og z/////////////////
   	
     	@SuppressWarnings("resource")
-		public static List<Ovelse> getInfoAboutOvelseInTimeInterval(Connection connection, String ovelsesnavn, Date startsDato, Date sluttDato) throws SQLException{
+		public static List<OvelseITreningsokt> getInfoAboutOvelseInTimeInterval(Connection connection, String ovelsesnavn, java.sql.Date startsDato, java.sql.Date sluttDato) throws SQLException{
   		
-    		List<Ovelse> ovelser = new ArrayList<>();
+    		List<OvelseITreningsokt> ovelser = new ArrayList<>();
+    		
   		
     		//Sjekker først om det finnes noen ovelsesnavn i apparatøvelse. Hvis det gjør det så execute kode
     		String queryStatement = "select count(*) from apparatovelse where ovelsesnavn = ?";
@@ -204,6 +206,7 @@ import java.util.ArrayList;
     		System.out.println(rs);
     		if (rs.getInt(1) > 0){
     			/////SJUUUUUK SPØRRING//////
+    			System.out.println("apparat");
     			queryStatement = "select dato, tidspunkt, antallKilo, antallSett, apparatNavn from ovelseITreningsokt JOIN "
     					+ "apparatovelse on (apparatovelse.ovelsesnavn = ovelseITreningsokt.ovelsesnavn) "
     					+ "and dato >= ? and dato < ? and apparatovelse.ovelsesnavn = ?";
@@ -211,13 +214,19 @@ import java.util.ArrayList;
     			preStat.setDate(1, startsDato);
     			preStat.setDate(2, sluttDato);
     			preStat.setString(3, ovelsesnavn);
+    			rs.close();
     			
     			ResultSet resultat = preStat.executeQuery();
     			while (resultat.next()){
- 
-    				ApparatOvelse apparatovelse = new ApparatOvelse(ovelsesnavn, 
-    				resultat.getInt("antallKilo"), resultat.getInt("antallSett"), new Apparat(resultat.getString("apparatNavn")));
-    		  		ovelser.add(apparatovelse);
+    				
+    				System.out.println("inne i resultat");
+    				OvelseITreningsokt apparatovelseITreningsokt = new OvelseITreningsokt(resultat.getDate("dato"), ovelsesnavn, 
+    						resultat.getInt("antallKilo"), resultat.getInt("antallSett"), null);
+    				
+    		  		ovelser.add(apparatovelseITreningsokt);
+    			}
+    			for (OvelseITreningsokt o : ovelser){
+    				System.out.println(o.getOvelsesnavn());
     			}
     			return ovelser;
     		}
@@ -230,6 +239,7 @@ import java.util.ArrayList;
     		rs.next();
 
     		if (rs.getInt(1) > 0){
+    			System.out.println("fri");
     			queryStatement = "select dato, tidspunkt, beskrivelse from ovelseITreningsokt JOIN "
     					+ "friovelse on (friovelse.ovelsesnavn = ovelseITreningsokt.ovelsesnavn) "
     					+ "and dato >= ? and dato < ? and friovelse.ovelsesnavn = ?";
@@ -237,12 +247,16 @@ import java.util.ArrayList;
     			preStat.setDate(1, startsDato);
     			preStat.setDate(2, sluttDato);
     			preStat.setString(3, ovelsesnavn);
+    			rs.close();
     			
     			ResultSet resultat = preStat.executeQuery();
     			while (resultat.next()){
-    				System.out.println("Da var vi inne her");
-    				FriOvelse friOvelse= new FriOvelse(ovelsesnavn, resultat.getString("beskrivelse"));
-    		  		ovelser.add(friOvelse);
+    				OvelseITreningsokt friovelseITreningsokt = new OvelseITreningsokt(resultat.getDate("dato"), ovelsesnavn, 
+    						0, 0, resultat.getString("beskrivelse"));
+    		  		ovelser.add(friovelseITreningsokt);
+    			}
+    			for (OvelseITreningsokt o : ovelser){
+    				System.out.println(o.getOvelsesnavn());
     			}
     			return ovelser;
     		}
@@ -438,9 +452,17 @@ import java.util.ArrayList;
     		System.out.println(DatabaseOperations.getOvelser(DBConnection.createDBConnection()));
     		
     		DatabaseOperations.addOvelse(DBConnection.createDBConnection(), "testovelse2");
+    		System.out.println(DatabaseOperations.getOvelser(DBConnection.createDBConnection()));
     		*/
     		
-    		System.out.println(DatabaseOperations.getOvelser(DBConnection.createDBConnection()));
+    		List<OvelseITreningsokt> OvelseITreningsokt = new ArrayList<>();
+    		OvelseITreningsokt.addAll(getInfoAboutOvelseInTimeInterval(DBConnection.createDBConnection(), "hei", new java.sql.Date(0000-1900, 10, 20), new java.sql.Date(2018-1900, 10, 20)));
+    		System.out.println(OvelseITreningsokt.get(0).getDato());
+    		System.out.println(OvelseITreningsokt.get(0).getOvelsesnavn());
+    		System.out.println(OvelseITreningsokt.get(0).getAntallKilo());
+    		System.out.println(OvelseITreningsokt.get(0).getAntallSett());
+    		System.out.println(OvelseITreningsokt.get(0).getBeskrivelse());
+    		
 		}	
     	
     }

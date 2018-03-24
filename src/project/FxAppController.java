@@ -48,28 +48,29 @@ public class FxAppController extends Application {
 	@FXML
 	ChoiceBox<Apparat> cboxApparat;
 	@FXML
-	Button btVelg, btAdd, btOpprettOkt, btAddApparatOvelse, btAddFriOvelse, btAddApparat, btSokGrupper, btSokNSiste, btOpprettOvelsesGruppe, btLagreOkt;
+	Button btVelg, btAdd, btOpprettOkt, btAddApparatOvelse, btAddFriOvelse, btAddApparat, btSokGrupper, btSokNSiste, btOpprettOvelsesGruppe, btLagreOkt, btSokOvelser;
 	@FXML
 	TableView<TreningsOkt> tblvOkter;
 	@FXML
-	TableView<Ovelse> tblvOvelseOversikt;
+	TableView<OvelseITreningsokt> tblvOvelseOversikt;
 	@FXML
-	TableColumn<TreningsOkt, String> tblcDato, tblcTidspunkt, tblcNotat, tblcDatoLogg;
+	TableColumn<TreningsOkt, String> tblcDato, tblcTidspunkt, tblcNotat;
 	@FXML
-	TableColumn<Ovelse, String> tblcNavnLogg, tblcBeskrivelseLogg;
+	TableColumn<OvelseITreningsokt, Date> tblcDatoLogg;
+	@FXML
+	TableColumn<OvelseITreningsokt, String> tblcNavnLogg, tblcBeskrivelseLogg;
 	@FXML
 	TableColumn<TreningsOkt, Integer> tblcVarighet, tblcForm, tblcPrestasjon;
 	@FXML
-	TableColumn<Ovelse, Integer> tblcKiloLogg, tblcSettLogg;
+	TableColumn<OvelseITreningsokt, Integer> tblcKiloLogg, tblcSettLogg;
 	@FXML
 	Tab tabOvelsesGruppe, tabApparat, tabOvelse, tabOkt, tabOversiktOkter, tabLogg;
 	TreningsOkt treningsOkt;
 	String listeMedOvelser = "";
 	Date fraDato, tilDato;
 	ObservableList<TreningsOkt> treningsOkterObs = FXCollections.observableArrayList();
-	ObservableList<Ovelse> loggObs = FXCollections.observableArrayList();
+	ObservableList<OvelseITreningsokt> loggObs = FXCollections.observableArrayList();
 	SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-	Connection conn;
 	
 	// i stedet for i database
 	List<Ovelse> ovelser = new ArrayList<Ovelse>();
@@ -91,9 +92,10 @@ public class FxAppController extends Application {
 	
 	public static java.sql.Date stringToDate(String date){
 		String[] deler = date.split("-");
-		Integer år = Integer.parseInt(deler[0]) - 1900;
+		Integer år = Integer.parseInt(deler[2]) - 1990;
 		Integer måned = Integer.parseInt(deler[1]) - 1;
-		Integer dag = Integer.parseInt(deler[2]);
+		Integer dag = Integer.parseInt(deler[0]);
+		@SuppressWarnings("deprecation")
 		java.sql.Date dato = new java.sql.Date(år, måned, dag);
 		return dato;
 	}
@@ -103,7 +105,8 @@ public class FxAppController extends Application {
 		Integer time = Integer.parseInt(deler[0]);
 		Integer minutt = Integer.parseInt(deler[1]);
 		Integer sekund = Integer.parseInt(deler[2]);
-		Time tiden = new Time(time, minutt, sekund);
+		@SuppressWarnings("deprecation")
+		Time tiden = new java.sql.Time(time, minutt, sekund);
 		return tiden;
 	}
 	
@@ -126,21 +129,21 @@ public class FxAppController extends Application {
 							ovelseIOkt.setAntallKilo(Integer.parseInt(txtKilo.getText()));
 							ovelseIOkt.setAntallSett(Integer.parseInt(txtSett.getText()));
 							// Bytt ut lista her
-							for (Apparat apparat : DatabaseOperations.getApparater(conn)) {
+							for (Apparat apparat : DatabaseOperations.getApparater(DBConnection.createDBConnection())) {
 								if (apparat.getNavn().equals(txtApparatValg.getText())) {
 									ovelseIOkt.setApparat(apparat);
 								}
 							}
-							DatabaseOperations.addOvelseITreningsOkt(conn, DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getDato(), 
-									DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getStartTidspunkt(), ovelseIOkt.getOvelsesnavn());
+							DatabaseOperations.addOvelseITreningsOkt(DBConnection.createDBConnection(), DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1).get(0).getDato(), 
+									DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1).get(0).getStartTidspunkt(), ovelseIOkt.getOvelsesnavn());
 							// Vi har ikke brukt objektet her, bare navnet, burde sende inn objektet i databasen, som har kilo osv. 
 							// Burde endre hva add-metoden gjor
 							// treningsOkter.get(treningsOkter.size() - 1).getOvelser().add(ovelseIOkt);
 						}
 						else {
 							FriOvelse ovelseIOkt = new FriOvelse(ovelse.getOvelsesnavn(), ((FriOvelse) ovelse).getBeskrivelse());
-							DatabaseOperations.addOvelseITreningsOkt(conn, DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getDato(), 
-									DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getStartTidspunkt(), ovelseIOkt.getOvelsesnavn());
+							DatabaseOperations.addOvelseITreningsOkt(DBConnection.createDBConnection(), DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1).get(0).getDato(), 
+									DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1).get(0).getStartTidspunkt(), ovelseIOkt.getOvelsesnavn());
 							// treningsOkter.get(treningsOkter.size() - 1).getOvelser().add(ovelseIOkt);
 						}
 					}
@@ -149,9 +152,9 @@ public class FxAppController extends Application {
 			}
 			
 		}
-		int storrelse = DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getOvelser().size();
-		listeMedOvelser += DatabaseOperations.getNSisteTreningsOkter(conn, 1).get(0).getOvelser().get(storrelse - 1).getOvelsesnavn() + ", ";
-		txtListeOvelser.setText(listeMedOvelser);
+		//int storrelse = DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1).get(0).getOvelser().size();
+		//listeMedOvelser += DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1).get(0).getOvelser().get(storrelse-1).getOvelsesnavn() + ", ";
+		//txtListeOvelser.setText(listeMedOvelser);
 		System.out.println("Ovelser lagret til okt");
 		System.out.println(treningsOkter.size());
 		txtKilo.clear();
@@ -167,42 +170,41 @@ public class FxAppController extends Application {
 	// ----------------------------------------------------------
 	
 	
-	public void addApparatOvelse() throws SQLException {
+	public void addApparatOvelse() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		// Maa endre "apparater" til database.getApparater
-		for (Apparat apparat : DatabaseOperations.getApparater(conn)) {
+		for (Apparat apparat : DatabaseOperations.getApparater(DBConnection.createDBConnection())) {
 			//maa ha en metode for aa hente ut alle apparater
 			if (apparat.getNavn().equals(txtApparatTilOvelse.getText())) {
-				DatabaseOperations.addApparatOvelse(conn, txtApparatOvelse.getText(), 
-						txtKilo.getText(), txtSett.getText(), txtApparatTilOvelse.getText());
+				DatabaseOperations.addOvelse(DBConnection.createDBConnection(), txtApparatTilOvelse.getText());
 			}
 		}
 		// Maa endre "ovelsesGrupper" til database.getOvelsesGrupper
 
-		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(conn)) {
+		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(DBConnection.createDBConnection())) {
 			//samme som over
 			if (gruppe.getNavn().equals(txtOvelsesGruppeApparat.getText())) {
-				DatabaseOperations.addOvelseIOvelsesgruppe(conn, txtApparatOvelse.getText(), gruppe.getNavn());
+				DatabaseOperations.addOvelseIOvelsesgruppe(DBConnection.createDBConnection(), txtApparatOvelse.getText(), gruppe.getNavn());
 			}
 		}
 		// add i db
-		DatabaseOperations.addOvelse(conn, txtApparatTilOvelse.getText());
+		DatabaseOperations.addOvelse(DBConnection.createDBConnection(), txtApparatTilOvelse.getText());
 		txtApparatOvelse.clear();
 		txtOvelsesGruppeApparat.clear();
 		txtApparatTilOvelse.clear();
 		System.out.println("Apparatovelse lagt til");
 	}
 	
-	public void addFriOvelse() throws SQLException {
+	public void addFriOvelse() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		FriOvelse friOvelse = new FriOvelse(txtFriOvelse.getText(), txtFriBeskrivelse.getText());
 		// Maa hente fra DB en liste med ovelser i ovelsesgruppe som stemmer mtp navnet skrevet inn
 
-		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(conn)) {
+		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(DBConnection.createDBConnection())) {
 			if (gruppe.getNavn().equals(txtOvelsesGruppeFri.getText())) {
-				DatabaseOperations.addOvelseIOvelsesgruppe(conn, friOvelse.getOvelsesnavn(), gruppe.getNavn());
+				DatabaseOperations.addOvelseIOvelsesgruppe(DBConnection.createDBConnection(), friOvelse.getOvelsesnavn(), gruppe.getNavn());
 			}
 		}
 		// add i db
-		DatabaseOperations.addOvelse(conn, txtFriOvelse.getText());
+		DatabaseOperations.addOvelse(DBConnection.createDBConnection(), txtFriOvelse.getText());
 		txtOvelsesGruppeFri.clear();
 		txtFriOvelse.clear();
 		txtFriBeskrivelse.clear();
@@ -213,8 +215,8 @@ public class FxAppController extends Application {
 	// Legg til Apparat
 	// ----------------------------------------------------------
 	
-	public void addApparat() throws SQLException {
-		DatabaseOperations.addApparat(conn, txtApparat.getText(), txtBeskrivelse.getText());
+	public void addApparat() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		DatabaseOperations.addApparat(DBConnection.createDBConnection(), txtApparat.getText(), txtBeskrivelse.getText());
 		txtApparat.clear();
 		txtBeskrivelse.clear();
 	}
@@ -228,19 +230,19 @@ public class FxAppController extends Application {
 	// Siden vi har valgt � ikke bruke en table i database for OvelsesGruppe saa maa opprettOvelsesGruppe utgaa
 	// Dette er egentlig et krav, men da gjoeres det slik at hver gang du lager et apparat saa legger man til en ovelsesgruppe,
 	// som String da som lagres i databasen. 
-	public void opprettOvelsesGruppe() throws SQLException {
+	public void opprettOvelsesGruppe() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		Ovelsesgruppe oGruppe = new Ovelsesgruppe(txtNavnGruppe.getText());
-		DatabaseOperations.addOvelsesgruppe(conn, oGruppe.getNavn());
+		DatabaseOperations.addOvelsesgruppe(DBConnection.createDBConnection(), oGruppe.getNavn());
 		txtNavnGruppe.clear();
 		System.out.println("Gruppe laget");
 		
 	}
 	
-	public void sokIOvelsesGruppe() throws SQLException {
+	public void sokIOvelsesGruppe() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		txtOvelseGruppe.clear();
 		String listeOvelser = "";
 		// Her m� man legge inn ovelserIOvelsesgrupper, og sjekke feltet for ovelsesgruppe om det stemmer med det som er skrevet inn
-		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(conn)) {
+		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(DBConnection.createDBConnection())) {
 			if (txtSokGruppe.getText().equals(gruppe.getNavn())) {
 				for (Ovelse ovelse : gruppe.getOvelser()) {
 					listeOvelser += (ovelse.getOvelsesnavn() + ", ");
@@ -256,7 +258,7 @@ public class FxAppController extends Application {
 	// Oversikt okter
 	// -----------------------------------------------------------
 	
-	public void initTable() throws SQLException {
+	public void initTable() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		int antall = Integer.parseInt(txtNSisteOkter.getText());
 		tblcDato.setCellValueFactory(new PropertyValueFactory<TreningsOkt, String>("dato"));
 		tblcTidspunkt.setCellValueFactory(new PropertyValueFactory<TreningsOkt, String>("startTidspunkt"));
@@ -265,16 +267,16 @@ public class FxAppController extends Application {
 		tblcForm.setCellValueFactory(new PropertyValueFactory<TreningsOkt, Integer>("personligForm"));
 		tblcPrestasjon.setCellValueFactory(new PropertyValueFactory<TreningsOkt, Integer>("prestasjon"));
 		
-		txtTotAntallOkter.setText(String.valueOf(DatabaseOperations.getTotalTreningsokter(conn)));
+		txtTotAntallOkter.setText(String.valueOf(DatabaseOperations.getTotalTreningsokter(DBConnection.createDBConnection())));
 		tblvOkter.setItems(getOkter(antall));
 	}
 	
-	private ObservableList<TreningsOkt> getOkter(int antall) throws SQLException {
+	private ObservableList<TreningsOkt> getOkter(int antall) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		if (!treningsOkterObs.isEmpty()) {
 			treningsOkterObs.clear();
 		}
 		for (int i = 0; i < antall; i++) {
-			treningsOkterObs.add(DatabaseOperations.getNSisteTreningsOkter(conn, antall).get(i));
+			treningsOkterObs.add(DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), antall).get(i));
 		}
 		return treningsOkterObs;
 	}
@@ -283,32 +285,36 @@ public class FxAppController extends Application {
 	// �velselogg
 	// -----------------------------------------------------------
 	
-	public void sokOvelseLogg() throws ParseException, SQLException {
+	public void sokOvelseLogg() throws ParseException, SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		if (!loggObs.isEmpty()) {
 			loggObs.clear();
 		}
-		fraDato = format.parse(txtFra.getText());
-		tilDato = format.parse(txtTil.getText());
-		Date dato;
+		String startsDato1 = txtFra.getText();
+		String sluttDato1 = txtTil.getText();
+		String ovelsesnavn = txtVelgOvelse.getText();
 		
-		tblcDatoLogg.setCellValueFactory(new PropertyValueFactory<TreningsOkt, String>("dato"));
-		tblcNavnLogg.setCellValueFactory(new PropertyValueFactory<Ovelse, String>("ovelsesnavn"));
-		tblcKiloLogg.setCellValueFactory(new PropertyValueFactory<Ovelse, Integer>("antallKilo"));
-		tblcSettLogg.setCellValueFactory(new PropertyValueFactory<Ovelse, Integer>("antallSett"));
-		tblcBeskrivelseLogg.setCellValueFactory(new PropertyValueFactory<Ovelse, String>("beskrivelse"));
+		System.out.println(startsDato1);
+		System.out.println(sluttDato1);
+		System.out.println(ovelsesnavn);
+	
+		List<OvelseITreningsokt> ovelseit = new ArrayList<>();
+		//getInfoAboutOvelseInTimeInterval(Connection connection, String ovelsesnavn, Date startsDato, Date sluttDato
 		
-		for (TreningsOkt okt : DatabaseOperations.getTreningsOkter(conn)) {
-			dato = okt.getDato();
-			if ((dato.compareTo(fraDato) > 0 && dato.compareTo(tilDato) < 0) 
-					|| dato.compareTo(fraDato) == 0 || dato.compareTo(tilDato) == 0) {
-				for (Ovelse ovelse : okt.getOvelser()) {
-					if (ovelse.getOvelsesnavn().equals(txtVelgOvelse.getText())) {
-						loggObs.add(ovelse);
-					}
-				}
-			}
+		
+		ovelseit.addAll(DatabaseOperations.getInfoAboutOvelseInTimeInterval(DBConnection.createDBConnection(), ovelsesnavn, 
+				FxAppController.stringToDate(startsDato1), FxAppController.stringToDate(sluttDato1)));
+		for (OvelseITreningsokt o : ovelseit){
+			System.out.println(o.getOvelsesnavn());
 		}
+		
+		tblcDatoLogg.setCellValueFactory(new PropertyValueFactory<OvelseITreningsokt, Date>("Dato"));
+		tblcNavnLogg.setCellValueFactory(new PropertyValueFactory<OvelseITreningsokt, String>("Ovelsesnavn"));
+		tblcKiloLogg.setCellValueFactory(new PropertyValueFactory<OvelseITreningsokt, Integer>("AntallKilo"));
+		tblcSettLogg.setCellValueFactory(new PropertyValueFactory<OvelseITreningsokt, Integer>("AntallSett"));
+		tblcBeskrivelseLogg.setCellValueFactory(new PropertyValueFactory<OvelseITreningsokt, String>("Beskrivelse"));
+		
 		tblvOvelseOversikt.setItems(loggObs);
+		tblvOvelseOversikt.setVisible(true);
 	}
 	
 	
