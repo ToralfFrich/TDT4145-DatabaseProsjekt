@@ -111,7 +111,7 @@ import java.util.Date;
     		prepStat.setInt(5, prestasjon);
     		prepStat.setString(6, notat);
     		
-    		prepStat.executeUpdate();
+    		prepStat.execute();
     		System.out.println("TreningsOkt lagt til");
     		
     	}
@@ -128,7 +128,7 @@ import java.util.Date;
     		prepStat.setTime(2, tidspunkt);
     		prepStat.setString(3, ovelsesnavn);
     		
-    		prepStat.executeUpdate();
+    		prepStat.execute();
     		System.out.println("Ovelse lagt i treningsokt");
     	}
     	
@@ -137,13 +137,14 @@ import java.util.Date;
     	//Legg til øvelse i øvelsesgruppe
     	public static void addOvelseIOvelsesgruppe(Connection connection, String ovelsesnavn, 
     			String ovelsesgruppe) throws SQLException{
+    		
     		String queryStatement = "INSERT INTO ovelseIOvelsesgruppe(ovelsesnavn, ovelsesgruppe) VALUES (?,?)";
     		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
     		
     		prepStat.setString(1, ovelsesnavn);
     		prepStat.setString(2, ovelsesgruppe);
     		
-    		prepStat.executeUpdate();
+    		prepStat.execute();
     		System.out.println("Ovelse lagt i ovelsesgruppe");
     	}
     	
@@ -156,7 +157,7 @@ import java.util.Date;
             
             prepStat.setString(1, Ovelsesgruppenavn);
             
-            prepStat.executeUpdate();
+            prepStat.execute();
             System.out.println("Ovelsesgruppe lagt til");
     	}
     	
@@ -360,16 +361,6 @@ import java.util.Date;
     		while (rs.next()){
     			Ovelsesgruppe ovelsesgruppe1 = new Ovelsesgruppe(rs.getString("ovelsesgruppenavn"));
     			ovelsesgrupper.add(ovelsesgruppe1);
-    		}
-    		
-    		//Henter ut ovelsesgrupper fra ovelseiovelsesgruppe
-    		queryStatement = "select ovelsesgruppe from ovelseIOvelsesgruppe";
-    		prepStat = connection.prepareStatement(queryStatement);
-    		rs = prepStat.executeQuery();
-    		
-    		while (rs.next()){
-    			Ovelsesgruppe ovelsesgruppe2 = new Ovelsesgruppe(rs.getString("ovelsesgruppe"));
-    			ovelsesgrupper.add(ovelsesgruppe2);
     		}
     		
 			return ovelsesgrupper;
