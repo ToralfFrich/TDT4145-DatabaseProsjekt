@@ -33,7 +33,7 @@ import java.util.Date;
     	
     	
     	//Legg til ovelse
-    	public static void addOvelse(Connection connection, String ovelsesnavn) throws SQLException {
+    	public static void addOvelse(Connection connection, String ovelsesnavn, String type) throws SQLException {
     		
     		String queryStatement = "select * from ovelse";
     		PreparedStatement prepStat = connection.prepareStatement(queryStatement);
@@ -42,16 +42,17 @@ import java.util.Date;
     		
     		//Sjekker om ovelse allerede finnes i ovelse-db
     		while(rs.next()){
-    			Ovelse ovelse = new Ovelse(rs.getString("ovelsesnavn"));
+    			Ovelse ovelse = new Ovelse(rs.getString("ovelsesnavn"), rs.getString("type"));
     			if (ovelse.getOvelsesnavn().equals(ovelsesnavn)){
     				System.out.println("Denne ovelsen finnes alt!");
     				return;
     			}
     		}
-    		queryStatement = "insert into ovelse (ovelsesnavn) VALUES (?)";
+    		queryStatement = "insert into ovelse (ovelsesnavn, type) VALUES (?,?)";
           	prepStat = connection.prepareStatement(queryStatement);
                 
            	prepStat.setString(1, ovelsesnavn);
+           	prepStat.setString(2, type);
                 
             prepStat.executeUpdate();
             System.out.println("ovelse lagt til");
@@ -73,7 +74,7 @@ import java.util.Date;
     		prepStat.execute();
     		System.out.println("ApparatOvelse lagt til ");
     		
-    		DatabaseOperations.addOvelse(connection, ovelsesnavn);
+    		DatabaseOperations.addOvelse(connection, ovelsesnavn, "ApparatOvelse");
     		
     	}
     	
@@ -90,7 +91,7 @@ import java.util.Date;
     		prepStat.execute();
     		System.out.println("Fri Ovelse lagt til");
     		
-    		DatabaseOperations.addOvelse(connection, ovelsesnavn);
+    		DatabaseOperations.addOvelse(connection, ovelsesnavn, "FriOvelse");
     		
     	}
     	
@@ -110,7 +111,7 @@ import java.util.Date;
     		prepStat.setInt(5, prestasjon);
     		prepStat.setString(6, notat);
     		
-    		prepStat.execute();
+    		prepStat.executeUpdate();
     		System.out.println("TreningsOkt lagt til");
     		
     	}
@@ -127,7 +128,7 @@ import java.util.Date;
     		prepStat.setTime(2, tidspunkt);
     		prepStat.setString(3, ovelsesnavn);
     		
-    		prepStat.execute();
+    		prepStat.executeUpdate();
     		System.out.println("Ovelse lagt i treningsokt");
     	}
     	
@@ -142,7 +143,7 @@ import java.util.Date;
     		prepStat.setString(1, ovelsesnavn);
     		prepStat.setString(2, ovelsesgruppe);
     		
-    		prepStat.execute();
+    		prepStat.executeUpdate();
     		System.out.println("Ovelse lagt i ovelsesgruppe");
     	}
     	
@@ -279,7 +280,7 @@ import java.util.Date;
     		ResultSet resultat = preStat.executeQuery();
     		
     		while (resultat.next()){
-    			Ovelse ovelse = new Ovelse(resultat.getString("ovelsesnavn"));
+    			Ovelse ovelse = new Ovelse(resultat.getString("ovelsesnavn"), null);
     			if (ovelser.contains(ovelse)){
     				ovelse.getOvelsesnavn();
     			}
@@ -387,8 +388,8 @@ import java.util.Date;
     		ResultSet rs = prepStat.executeQuery();
     		
     		while (rs.next()){
-    			ApparatOvelse apparatovelse = new ApparatOvelse(rs.getString("ovelsesnavn"), rs.getInt("antallKilo"), 
-    					rs.getInt("antallSett"), new Apparat(rs.getString("apparatNavn")));
+    			ApparatOvelse apparatovelse = new ApparatOvelse(rs.getString("ovelsesnavn"), rs.getString("antallKilo"), 
+    					rs.getString("antallSett"), new Apparat(rs.getString("apparatNavn")));
     			ovelser.add(apparatovelse);
     		}
     		
@@ -417,7 +418,7 @@ import java.util.Date;
     		ResultSet rs = prepStat.executeQuery();
     		
     		while (rs.next()){
-    			Ovelse ovelse = new Ovelse(rs.getString("ovelsesnavn"));
+    			Ovelse ovelse = new Ovelse(rs.getString("ovelsesnavn"), rs.getString("type"));
     			ovelser.add(ovelse);
     		}
     		

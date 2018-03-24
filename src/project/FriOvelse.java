@@ -5,7 +5,7 @@ public class FriOvelse extends Ovelse{
 	private String beskrivelse; 
 	
 	public FriOvelse(String ovelsesnavn, String beskrivelse) {
-		super(ovelsesnavn);
+		super(ovelsesnavn, "FriOvelse");
 		this.beskrivelse = beskrivelse;
 	}
 	

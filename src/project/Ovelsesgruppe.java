@@ -19,11 +19,6 @@ public class Ovelsesgruppe {
 	public List<Ovelse> getOvelser() {
 		return this.ovelser;
 	}
-	
-	public void addOvelseIOvelsesgruppe(String ovelsesstring){
-		Ovelse ovelse = new Ovelse(ovelsesstring);
-		this.ovelser.add(ovelse);
-	}
 
 
 }

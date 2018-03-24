@@ -111,52 +111,75 @@ public class FxAppController extends Application {
 	}
 	
 	public void lagOkt() throws NumberFormatException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		DatabaseOperations.addTreningsOkt(DBConnection.createDBConnection(), stringToDate(txtDato.getText()), 
-				stringToTime(txtTidspunkt.getText()), Integer.parseInt(txtVarighet.getText()), 
-				Integer.parseInt(txtPersonligForm.getText()), Integer.parseInt(txtPrestasjon.getText()), txtNotat.getText());
-		System.out.println("Okt laget");
+		DatabaseOperations.addTreningsOkt(DBConnection.createDBConnection(), 
+				stringToDate(txtDato.getText()), 
+				stringToTime(txtTidspunkt.getText()), 
+				Integer.parseInt(txtVarighet.getText()), 
+				Integer.parseInt(txtPersonligForm.getText()), 
+				Integer.parseInt(txtPrestasjon.getText()), 
+				txtNotat.getText());
+		System.out.println("TreningsOkt lagt til i database");
 	}
 	
+	//Går for en litt pragmatisk løsning her ettersom at vi aldri trenger å hente ut ovelsesinfo som er knyttet opp mot treningsokt
 	public void leggTilOvelserITreningsokt() throws SQLException, NumberFormatException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-		// Bytt ut lista her
-		for (Ovelse ovelse : DatabaseOperations.getOvelser(DBConnection.createDBConnection())) {
-			for (Ovelse ovelsesomharblittgjort : DatabaseOperations.getOvelserSomHarBlittGjort(DBConnection.createDBConnection())){
-				if (ovelse.getOvelsesnavn().equals(ovelsesomharblittgjort.getOvelsesnavn())){
-					if (txtOvelseNavn.getText().equals(ovelse.getOvelsesnavn())) {
-						if (ovelse instanceof ApparatOvelse) {
-							System.out.println("Den skjonte at det var et Apparat, digg");
-							ApparatOvelse ovelseIOkt = new ApparatOvelse(ovelse.getOvelsesnavn());
-							ovelseIOkt.setAntallKilo(Integer.parseInt(txtKilo.getText()));
-							ovelseIOkt.setAntallSett(Integer.parseInt(txtSett.getText()));
-							// Bytt ut lista her
-							for (Apparat apparat : DatabaseOperations.getApparater(DBConnection.createDBConnection())) {
-								if (apparat.getNavn().equals(txtApparatValg.getText())) {
-									ovelseIOkt.setApparat(apparat);
-								}
-							}
-							DatabaseOperations.addOvelseITreningsOkt(DBConnection.createDBConnection(), DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1).get(0).getDato(), 
-									DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1).get(0).getStartTidspunkt(), ovelseIOkt.getOvelsesnavn());
-							// Vi har ikke brukt objektet her, bare navnet, burde sende inn objektet i databasen, som har kilo osv. 
-							// Burde endre hva add-metoden gjor
-							// treningsOkter.get(treningsOkter.size() - 1).getOvelser().add(ovelseIOkt);
-						}
-						else {
-							FriOvelse ovelseIOkt = new FriOvelse(ovelse.getOvelsesnavn(), ((FriOvelse) ovelse).getBeskrivelse());
-							DatabaseOperations.addOvelseITreningsOkt(DBConnection.createDBConnection(), DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1).get(0).getDato(), 
-									DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1).get(0).getStartTidspunkt(), ovelseIOkt.getOvelsesnavn());
-							// treningsOkter.get(treningsOkter.size() - 1).getOvelser().add(ovelseIOkt);
+		
+		String ovelsesnavn = txtOvelseNavn.getText();
+		
+		
+		//Henter ut alle ovelser fra getOvelser.
+		for (Ovelse ovelse : DatabaseOperations.getOvelser(DBConnection.createDBConnection())){
+			if (ovelse.getOvelsesnavn().equals(ovelsesnavn)){
+				
+			
+				//Hvis ApparatOvelse, Ovelse.type er lagt til som et attributt.
+				if (ovelse.getType().equals("ApparatOvelse")){
+					
+					//Oppretter ApparatOvelse objekt
+					ApparatOvelse ovelseIOkt = new ApparatOvelse(ovelse.getOvelsesnavn());
+					ovelseIOkt.setAntallKilo(txtKilo.getText());
+					ovelseIOkt.setAntallSett(txtSett.getText());
+					for (Apparat apparat : DatabaseOperations.getApparater(DBConnection.createDBConnection())) {
+						if (apparat.getNavn().equals(txtApparatValg.getText())) {
+							ovelseIOkt.setApparat(apparat);
 						}
 					}
+					//ApparatOvelse lagt til
+					DatabaseOperations.addApparatOvelse(DBConnection.createDBConnection(), ovelseIOkt.getOvelsesnavn(), 
+							ovelseIOkt.getAntallKilo(), ovelseIOkt.getAntallSett(), ovelseIOkt.getApparat().getNavn());
+					
+					//Legger til Ovelse i OvelseITreningOkt
+					DatabaseOperations.addOvelseITreningsOkt(DBConnection.createDBConnection(), 
+							(DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1)).get(0).getDato(),
+							(DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1)).get(0).getStartTidspunkt(),
+							txtOvelseNavn.getText());
 				}
 				
+				
+				//Hvis friovelse. Vet ikke hvor greit det er å caste her da, men virker fair
+				else {
+					FriOvelse ovelseIOkt = new FriOvelse(ovelse.getOvelsesnavn(), 
+							((FriOvelse) ovelse).getBeskrivelse());
+					
+					//FriOvelse lag til
+					DatabaseOperations.addFriOvelse(DBConnection.createDBConnection(), ovelseIOkt.getOvelsesnavn(),
+							ovelseIOkt.getBeskrivelse());
+					
+					//Legger til Ovelse i OvelseITreningOkt
+					DatabaseOperations.addOvelseITreningsOkt(DBConnection.createDBConnection(), 
+							(DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1)).get(0).getDato(),
+							(DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1)).get(0).getStartTidspunkt(),
+							txtOvelseNavn.getText());
+				}
 			}
 			
+			//Hvis ovelsen ikke eksisterer i ovelse-database-tabell
+			else {
+				System.out.println("Du må definere ovelsen forst.");
+			}
 		}
-		//int storrelse = DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1).get(0).getOvelser().size();
-		//listeMedOvelser += DatabaseOperations.getNSisteTreningsOkter(DBConnection.createDBConnection(), 1).get(0).getOvelser().get(storrelse-1).getOvelsesnavn() + ", ";
-		//txtListeOvelser.setText(listeMedOvelser);
-		System.out.println("Ovelser lagret til okt");
-		System.out.println(treningsOkter.size());
+		
+		System.out.println("Ovelse lagret til okt");
 		txtKilo.clear();
 		txtSett.clear();
 		txtOvelseNavn.clear();
@@ -171,40 +194,55 @@ public class FxAppController extends Application {
 	
 	
 	public void addApparatOvelse() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-		// Maa endre "apparater" til database.getApparater
-		for (Apparat apparat : DatabaseOperations.getApparater(DBConnection.createDBConnection())) {
-			//maa ha en metode for aa hente ut alle apparater
-			if (apparat.getNavn().equals(txtApparatTilOvelse.getText())) {
-				DatabaseOperations.addOvelse(DBConnection.createDBConnection(), txtApparatTilOvelse.getText());
+		
+		boolean check = false;
+		
+		for (Apparat apparat : DatabaseOperations.getApparater(DBConnection.createDBConnection())){
+			if (txtApparatTilOvelse.getText().equals(apparat.getNavn())){
+				check = true;
 			}
 		}
-		// Maa endre "ovelsesGrupper" til database.getOvelsesGrupper
-
+		
+		if (check == false){
+			System.out.println("Du må legge til en ovelse forst");
+			return;
+		}
+		
+		//Legger til ApparatOvelse i ovelsesGrupper
 		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(DBConnection.createDBConnection())) {
-			//samme som over
 			if (gruppe.getNavn().equals(txtOvelsesGruppeApparat.getText())) {
-				DatabaseOperations.addOvelseIOvelsesgruppe(DBConnection.createDBConnection(), txtApparatOvelse.getText(), gruppe.getNavn());
+				
+				DatabaseOperations.addOvelseIOvelsesgruppe(
+						DBConnection.createDBConnection(), 
+						txtApparatOvelse.getText(), 
+						txtOvelsesGruppeApparat.getText());
 			}
 		}
-		// add i db
-		DatabaseOperations.addOvelse(DBConnection.createDBConnection(), txtApparatTilOvelse.getText());
+		
+		//Add ApparatOvelse i ovelse
+		DatabaseOperations.addOvelse(DBConnection.createDBConnection(), txtApparatOvelse.getText(), "ApparatOvelse");
 		txtApparatOvelse.clear();
 		txtOvelsesGruppeApparat.clear();
 		txtApparatTilOvelse.clear();
 		System.out.println("Apparatovelse lagt til");
 	}
 	
+	//Legger til en FriOvelse i ovelseiovelsesgruppe og i ovelse
 	public void addFriOvelse() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		FriOvelse friOvelse = new FriOvelse(txtFriOvelse.getText(), txtFriBeskrivelse.getText());
-		// Maa hente fra DB en liste med ovelser i ovelsesgruppe som stemmer mtp navnet skrevet inn
 
 		for (Ovelsesgruppe gruppe : DatabaseOperations.getOvelsesgrupper(DBConnection.createDBConnection())) {
 			if (gruppe.getNavn().equals(txtOvelsesGruppeFri.getText())) {
-				DatabaseOperations.addOvelseIOvelsesgruppe(DBConnection.createDBConnection(), friOvelse.getOvelsesnavn(), gruppe.getNavn());
+				
+				DatabaseOperations.addOvelseIOvelsesgruppe(
+						DBConnection.createDBConnection(), 
+						friOvelse.getOvelsesnavn(), 
+						gruppe.getNavn());
 			}
 		}
-		// add i db
-		DatabaseOperations.addOvelse(DBConnection.createDBConnection(), txtFriOvelse.getText());
+		
+		//Add friOvelse i ovelse
+		DatabaseOperations.addOvelse(DBConnection.createDBConnection(), txtFriOvelse.getText(), "FriOvelse");
 		txtOvelsesGruppeFri.clear();
 		txtFriOvelse.clear();
 		txtFriBeskrivelse.clear();
@@ -232,7 +270,8 @@ public class FxAppController extends Application {
 	// som String da som lagres i databasen. 
 	public void opprettOvelsesGruppe() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		Ovelsesgruppe oGruppe = new Ovelsesgruppe(txtNavnGruppe.getText());
-		DatabaseOperations.addOvelsesgruppe(DBConnection.createDBConnection(), oGruppe.getNavn());
+		DatabaseOperations.addOvelsesgruppe(DBConnection.createDBConnection(), 
+				oGruppe.getNavn());
 		txtNavnGruppe.clear();
 		System.out.println("Gruppe laget");
 		

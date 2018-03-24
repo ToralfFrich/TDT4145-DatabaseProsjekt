@@ -2,26 +2,26 @@ package project;
 
 public class ApparatOvelse extends Ovelse{
 
-	private int antallKilo;
-	private int antallSett;
+	private String antallKilo;
+	private String antallSett;
 	private Apparat apparat;
 	
-	public ApparatOvelse(String ovelsesnavn, int antallKilo, int antallSett, Apparat apparat) {
-		super(ovelsesnavn);
+	public ApparatOvelse(String ovelsesnavn, String antallKilo, String antallSett, Apparat apparat) {
+		super(ovelsesnavn, "ApparatOvelse");
 		this.antallKilo = antallKilo;
 		this.antallSett = antallSett;
 		this.apparat = apparat;
 	}
 	
 	public ApparatOvelse(String ovelsesnavn) {
-		super(ovelsesnavn);
+		super(ovelsesnavn, "ApparatOvelse");
 	}
 
-	public int getAntallKilo() {
+	public String getAntallKilo() {
 		return antallKilo;
 	}
 
-	public int getAntallSett() {
+	public String getAntallSett() {
 		return antallSett;
 	}
 
@@ -29,11 +29,11 @@ public class ApparatOvelse extends Ovelse{
 		return apparat;
 	}
 
-	public void setAntallKilo(int antallKilo) {
+	public void setAntallKilo(String antallKilo) {
 		this.antallKilo = antallKilo;
 	}
 
-	public void setAntallSett(int antallSett) {
+	public void setAntallSett(String antallSett) {
 		this.antallSett = antallSett;
 	}
 
